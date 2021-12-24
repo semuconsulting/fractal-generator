@@ -24,7 +24,7 @@ The following instructions can be viewed by clicking on the `?` button:
 - Press 'C' to cycle through color themes.
 - Press 'up/down arrow' to shift color theme up or down.
 - Press 'left/right arrow' to rotate Julia Set clockwise or anti-clockwise.
-- Press 'E' to toggle exponent (2 or 3; Only available in 'Complex maths' mode. **NB:** exponents > 2 will dramatically increase rendering time).</li> 
+- Press 'E' to cycle exponent (2 - 6).
 
 ## To view and deploy as a web page
 
@@ -32,13 +32,13 @@ To view as a web page, simply open the [index.html](./index.html) file from the 
 
 ```bash
 # Clone this repository
-git clone https://github.com/semuconsulting/electron-fractal
+git clone https://github.com/Algol-Variables/fractal-generator
 # Go into the repository
-cd electron-fractal
+cd fractal-generator
 # Copy files to required web server directory e.g. /var/www/html/fractal/
 cp {index.html, app.js, complexlite.js, colormaps.js, fractal.js, styles.css} /var/www/html/fractal
 ```
-See, for example: [electron-fractal](https://www.semuconsulting.com/fractal/)
+See, for example: [fractal-generator](https://www.algolvariables.com/fractals/)
 
 ## To build and deploy as a desktop application
 
@@ -46,9 +46,9 @@ To clone and run this repository you'll need [Git](https://git-scm.com) and [Nod
 
 ```bash
 # Clone this repository
-git clone https://github.com/semuconsulting/electron-fractal
+git clone https://github.com/Algol-Variables/fractal-generator
 # Go into the repository
-cd electron-fractal
+cd fractal-generator
 # Install dependencies
 npm install
 # Install electron-forge (if required)
