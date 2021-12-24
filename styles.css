@@ -44,7 +44,7 @@ div.settings {
     background-color: white;
     padding: 10px;
     width: 700px;
-    height: 200px;
+    height: 220px;
     display: none;
     font-size: 0.8em;
     color: grey;
@@ -148,7 +148,7 @@ button#btnPlot {
     /* Stay in place */
     z-index: 1;
     /* Sit on top */
-    padding-top: 100px;
+    padding-top: 50px;
     /* Location of the box */
     left: 0;
     top: 0;
@@ -168,9 +168,9 @@ button#btnPlot {
     color: darkslategray;
     background-color: #fefefe;
     margin: auto;
-    padding: 20px;
+    padding: 10px;
     border: 1px solid #888;
-    width: 50%;
+    width: 60%;
 }
 
 .close {
@@ -185,4 +185,8 @@ button#btnPlot {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+.font-7 {
+    font-size: .7em;
 }

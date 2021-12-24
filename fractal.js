@@ -1,11 +1,11 @@
 // ------------------------------------------------------------------------
 // Interactive fractal generation using JavaScript and the 
-// HTML5 Canvas element. Provides two alternative fractal calculation
-// methods; one using standard maths, the other using complex maths via
-// the provided complexlite.js library. Standard maths is faster for
-// standard sets but complex maths allows for more exotic variations.
+// HTML5 Canvas element.
 //
-// Copyright (c) 2021 semuadmin
+// fractal() function Features a number of optimisations to minimise the 
+// number of maths operations per iteration.
+//
+// Copyright (c) 2021 Algol Variables
 //
 // BSD 3-Clause License
 // ------------------------------------------------------------------------
@@ -13,7 +13,6 @@
 
 function fractalStart() {
 
-    const PERIODCHECK = true; // Perform periodicty check optimisation
     const MANDELBROT = 0;
     const JULIA = 1;
     const STANDARD = 0;
@@ -171,10 +170,12 @@ function fractalStart() {
         return new Complex(re, im);
     }
 
-    // Calculate the escape scalars for the complex coordinates p, c
+    // Calculate the escape scalars for the complex coordinates p, c and integer 
+    // exponent n. Uses basic maths for n = 2 (the most common Mandelbrot 
+    // configuration) and Complex polar maths for n > 2.
     function fractal(p, c, n, maxiter, radius) {
 
-        var i, za, zre, zim, tre, cre, cim, r, θ;
+        var i, za, zre, zim, zre2, zim2, tre, cre, cim, r, θ;
         var lastre = 0;
         var lastim = 0;
         var per = 0;
@@ -202,14 +203,22 @@ function fractalStart() {
                 zim = -zim; // conjugate z
             }
 
+            // do squaring now saves a couple of calculations later
+            zre2 = zre * zre;
+            zim2 = zim * zim;
+            za = zre2 + zim2 // abs(z)²
+            if (za > radius) { // abs(z)² > radius²
+                break;
+            }
+
             // z = z² + c
             if (n == 2) {
-                tre = zre * zre - zim * zim + cre;
-                zim = 2 * zre * zim + cim;
+                tre = zre2 - zim2 + cre;
+                zim = 2 * zre * zim + cim; // *2
                 zre = tre;
             }
             else { // z = zⁿ + c, where n is integer > 2
-                r = powi(Math.sqrt(zre * zre + zim * zim), n); // radiusⁿ
+                r = powi(Math.sqrt(zre2 + zim2), n); // radiusⁿ
                 θ = n * Math.atan2(zim, zre); // angleⁿ
                 zre = r * Math.cos(θ) + cre;
                 zim = r * Math.sin(θ) + cim;
@@ -217,31 +226,25 @@ function fractalStart() {
 
             // Optimisation - periodicity check speeds
             // up processing of points within set
-            if (PERIODCHECK) {
-                if (zre === lastre && zim === lastim) {
-                    i = maxiter;
-                    break;
-                }
-                per += 1;
-                if (per > 20) {
-                    per = 0;
-                    lastre = zre;
-                    lastim = zim;
-                }
+            if (zre === lastre && zim === lastim) {
+                i = maxiter;
+                break;
+            }
+            per += 1;
+            if (per > 20) {
+                per = 0;
+                lastre = zre;
+                lastim = zim;
             }
             // ... end of optimisation
 
-            za = zre * zre + zim * zim // abs(z)²
-            if (za > radius) { // abs(z)² > radius²
-                break;
-            }
         }
         return { i, za };
     }
 
-    // Optimised pow() function for integer exponents
-    // using 'halving and squaring'. Faster than
-    // Math.pow() for integer exponents.
+    // Optimised pow() function for integer exponent n
+    // using 'halving and squaring'. Significantly Faster
+    // than Math.pow() for integer exponents.
     function powi(base, n) {
 
         var res = 1;
@@ -322,7 +325,7 @@ function fractalStart() {
 
     // Plot the pixel color in the imagedata.
     function plot(x, y, color, width) {
-        var pixelindex = (y * width + x) * 4;
+        var pixelindex = (y * width + x) << 2; // * 4
         imagedata.data[pixelindex] = color.r;
         imagedata.data[pixelindex + 1] = color.g;
         imagedata.data[pixelindex + 2] = color.b;
@@ -331,8 +334,9 @@ function fractalStart() {
 
     // Normalize iteration count from escape scalars
     // to produces smoother color gradients.
+    // scalars := {i, za}
     function normalize(scalars) {
-        var lzn = Math.log(scalars.za) << 1;
+        var lzn = Math.log(scalars.za) << 1; // * 2
         var nu = Math.log(lzn / Math.log(radius)) / Math.log(exponent)
         return scalars.i + 1 - nu;
     }
