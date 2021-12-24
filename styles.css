@@ -1,0 +1,188 @@
+/* styles.css */
+
+/* Add styles here to customize the appearance of your app */
+@charset "UTF-8";
+
+html {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+div {
+    width: 100%;
+    margin: 0 auto;
+}
+
+div.main-container {
+    display: block;
+    position: relative;
+    min-height: 95vh;
+    background-color: white;
+    overflow: auto;
+    margin: 0 auto;
+    padding: 0;
+    /* padding-bottom:40px; */
+    width: 100%;
+}
+
+div.canvas {
+    background-color: white;
+}
+
+div.notes {
+    background-color: white;
+    width: 85%;
+    font-size: .8em;
+    color: grey;
+}
+
+div.settings {
+    background-color: white;
+    padding: 10px;
+    width: 700px;
+    height: 200px;
+    display: none;
+    font-size: 0.8em;
+    color: grey;
+    border:1px solid grey;
+    border-radius: 8px;
+}
+
+div.settingstable {
+    float: left;
+    width: 85%;
+}
+
+div.settingsbtn {
+    float: left;
+    width: 15%;
+}
+
+header {
+    margin: 0 auto;
+    font-size: .8em;
+}
+
+span {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+label {
+    color: grey;
+    display: inline-block;
+    text-align: right;
+}
+
+label.wid2 {
+    width: 60px;
+}
+
+label.wid1 {
+    width: 20px;
+}
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.canvas {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.help {
+    width: 80%;
+    margin: 0 auto;
+    font-size: .8em;
+    color: grey;
+}
+
+h1 {
+    font-weight: normal;
+    color: darkslategrey;
+}
+
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    cursor: crosshair;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    width: 40px;
+    height: 40px;
+    padding: 10px 10px;
+    text-align: center;
+    vertical-align: middle;
+    color: darkslategrey;
+    background-color: lightgrey;
+    font-size: 1.5em;
+}
+
+button:hover {
+    background-color: darkgrey;
+}
+
+button#btnPlot {
+    width: 80px;
+}
+
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+.modal-content {
+    color: darkslategray;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+}
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}

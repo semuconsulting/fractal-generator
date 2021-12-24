@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link href="./styles.css" rel="stylesheet">
+  <script src="./colormaps.js"></script>
+  <script src="./app.js"></script>
+  <script src="./complexlite.js"></script>
+  <script src="./fractal.js"></script>
+  <title>Fractal Generator</title>
+</head>
+
+<body onload="start()">
+  <div class="main-container">
+    <header class="text-center">
+      <h1>Fractal Generator</h1>
+    </header>
+    <div class="canvas" id="canvas">
+      <canvas id="fractal" width=750px height=500px>
+      </canvas>
+    </div> <!-- /.canvas -->
+    <div class="notes text-center" id="notes">
+      <p></p>
+      <button id="btnReset">R</button>
+      <button id="btnZoomIn">I</button>
+      <button id="btnZoomOut">O</button>
+      <button id="btnMode">M</button>
+      <button id="btnJulia">J</button>
+      <button id="btnVariant">V</button>
+      <button id="btnColor">T</button>
+      <button id="btnColorUp">&#8593;</button>
+      <button id="btnColorDown">&#8595;</button>
+      <button id="btnJuliaDown">&#8592;</button>
+      <button id="btnJuliaUp">&#8594;</button>
+      <button id="btnJuliaSpin">&#10227;</button>
+      <button id="btnExponent">E</button>
+      <button id="btnSettings">&#9881;</button>
+      <button id="btnHelp">?</button>
+      <p></p>
+      <span id="ppos"></span><span id="cpos"></span>
+      <span id="zoom"></span><span id="exponent"></span><br>
+      <span id="setmode"></span><span id="setvar"></span>
+      <span id="theme"></span><span id="duration"></span>
+    </div> <!-- /.notes -->
+    <p></p>
+    <div class="settings" id="settings">
+      <!-- WORK IN PROGRESS -->
+      <div class="settingstable">
+        <table>
+          <tr>
+            <td><label class="wid2" for="pre">p re:</label></td>
+            <td><input type="text" id="pre" name="pre"></td>
+            <td><label class="wid2" for="pim">im:</label></td>
+            <td><input type="text" id="pim" name="pim"> i</td>
+          </tr>
+          <tr>
+            <td><label class="wid2" for="cre">c re:</label></td>
+            <td><input type="text" id="cre" name="cre"></td>
+            <td><label class="wid2" for="cim">im:</label></td>
+            <td><input type="text" id="cim" name="cim"> i</td>
+          </tr>
+          <tr>
+            <td><label class="wid2" for="zoffre">z offset re:</label></td>
+            <td><input type="text" id="zoffre" name="zoffre"></td>
+            <td><label class="wid2" for="zoffim">im:</label></td>
+            <td><input type="text" id="zoffim" name="zoffim"> i</td>
+          </tr>
+          <tr>
+            <td><label class="wid2" for="expset">Exponent:</label></td>
+            <td><input type="text" id="expset" name="expset"></td>
+            <td><label class="wid2" for="maxiset">Max Iter:</label></td>
+            <td><input type="text" id="maxiset" name="maxiset"></td>
+          </tr>
+          <tr>
+            <td><label class="wid2" for="zoomset">Zoom:</label></td>
+            <td><input type="text" id="zoomset" name="zoomset"></td>
+            <td><label class="wid2" for="zoomincset">Zoom Inc:</label></td>
+            <td><input type="text" id="zoomincset" name="zoomincset"></td>
+          </tr>
+          <tr>
+            <td><label class="wid2" for="rotateset">Rotate:</label></td>
+            <td><input type="text" id="rotateset" name="rotateset"></td>
+            <td><label class="wid2" for="spinincset">Spin Inc:</label></td>
+            <td><input type="text" id="spinincset" name="spinincset"></td>
+          </tr>
+          <tr>
+            <td><label class="wid2" for="modeset">Mode:</label></td>
+            <td><select id="modeset" name="modeset">
+              </select></td>
+            <td><label class="wid2" for="variantset">Variant:</label></td>
+            <td><select id="variantset" name="variantset">
+              </select></td>
+          </tr>
+          <tr>
+            <td><label class="wid2" for="themeset">Color Theme:</label></td>
+            <td><select id="themeset" name="themeset">
+              </select></td>
+          </tr>
+        </table>
+      </div> <!-- ./settingstable -->
+      <div class="settingsbtn">
+        <button id="btnPlot">PLOT</button>
+      </div> <!-- ./settingsbtn -->
+    </div> <!-- ./settings -->
+    <div id="helpModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>This is a simple Mandelbrot and Julia Set generator implemented in JavaScript.</p>
+        <ul>
+          <li>Click to zoom in.</li>
+          <li>Click and drag to zoom into drawn area.</li>
+          <li>Ctrl + Click to zoom out.</li>
+          <li>Shift + Click to centre at current coordinates.</li>
+          <li>Alt(Option) + Click to toggle between Mandelbrot and Julia modes at the current coordinates.</li>
+          <li>Click 'R' to reset to default settings.</li>
+          <l1>Click 'I' to zoom in at current coordinate.</l1>
+          <l1>Click 'O' to zoom out at current coordinate.</l1>
+          <li>Click 'M' to cycle through modes.</li>
+          <li>Click 'J' to enter Julia mode at current coordinates.</li>
+          <li>Click 'V' to cycle through variants.</li>
+          <li>Click 'T' to cycle through color themes.</li>
+          <li>Click '&#8593;/&#8595;' to shift color theme up or down.</li>
+          <li>Click '&#8592;/&#8594;' to rotate Julia Set clockwise or anti-clockwise.</li>
+          <li>Click '&#10227;' to turn 'Julia spin' animation on or off.</li>
+          <li>Click 'E' to toggle exponent (2 or 3).</li>
+        </ul>
+        © semuadmin 2021. BSD 3-Clause License.<br>
+        <a href="https://github.com/semuadmin/electron_fractal">GitHub Home Page</a>
+      </div> <!-- /.modal-content -->
+    </div>
+    <!--/.help-modal-->
+  </div> <!-- /.main-container-->
+  <!-- You can also require other files to run in this process -->
+</body>
+
+</html>
