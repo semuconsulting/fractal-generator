@@ -1,5 +1,5 @@
 {
-  "name": "electron_fractal",
+  "name": "fractal-generator",
   "version": "0.1.0",
   "description": "Fractal Generator",
   "main": "main.js",
@@ -8,7 +8,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
-  "repository": "https://github.com/semuconsulting/electron_fractal",
+  "repository": "https://github.com/Algol-Variables/fractal-generator",
   "keywords": [
     "Electron",
     "fractal",
@@ -35,7 +35,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "electron_fractal"
+            "name": "fractal-generator"
           }
         },
         {
