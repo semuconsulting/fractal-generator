@@ -402,7 +402,7 @@ function fractalStart() {
     // of 1e14.
     function getAutoiter(zoom, setmode) {
         var miniter = setmode === JULIA ? MINITERJ : MINITERM;
-        return Math.max(miniter, parseInt(Math.abs(60 * Math.log(1 / Math.sqrt(zoom)))));
+        return Math.max(miniter, parseInt(Math.abs(500 * Math.log(1 / Math.sqrt(zoom)))));
     }
 
     // Mouse down handler.
