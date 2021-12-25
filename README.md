@@ -2,28 +2,32 @@
 
 Just a bit of fun...
 
-A JavaScript implementation of an interactive fractal generator.  It supports both Mandelbrot and Julia modes and with 'Standard', 'Burning Ship' and 'Tricorn' variants using a variety of color rendering themes.  Simple zoom, pan and color interaction is supported via mouse clicks/drags and hotkey strokes.
+A JavaScript implementation of an interactive fractal generator.  It supports both Mandelbrot and Julia modes and 'Standard', 'Burning Ship' and 'Tricorn' variants using a variety of color rendering themes.  
 
-The app implements two alternate fractal calculation methodologies; one using standard maths, the other using the provided `complexlite.js` complex maths library.
+Fractal settings can be configured via a series of quick-set buttons or via a more comprehensive configuration form, which allows specific coordinates to be entered in complex (real/imaginaary) notation. The application also supports basic 'Zoom In' and 'Julia Spin' animation.
 
-![full app screenshot ubx](/images/screenshot.png)
+![full app screenshot ubx](/images/screenshot.png)![full app screenshot ubx](/images/screenshot_open.png)
 
 The project can be deployed as an Electron (Node.js) desktop application (`index2.html`), or as a stand-alone web site `index.html`.
 
-The following instructions can be viewed by clicking on the `?` button:
+The instructions can be viewed by clicking on the `?` button:
 
-- Click to zoom in by fixed factor.
+- Click anywhere in the image to zoom in at that coordinate.
 - Click and drag to zoom into drawn area.
 - Ctrl + Click to zoom out by fixed factor.
 - Shift + Click to centre at current coordinates.
 - Alt(Option) + Click to toggle between Mandelbrot and Julia modes at current coordinates (useful points of interest can be found just outside the perimeter of the Mandelbrot set).
 - Press 'R' to reset to default settings.
+- Press 'I' to zoom in.
+- Press 'O' to zoom out.
+- Press 'Z' to turn zoom animation on or off.
 - Press 'M' to cycle through modes (Mandelbrot / Julia).
 - Press 'J' to enter Julia mode at current coordinates.
-- Press 'V' to cycle through variants (Standard / Burning Ship / Tricorn).   
-- Press 'C' to cycle through color themes.
-- Press 'up/down arrow' to shift color theme up or down.
-- Press 'left/right arrow' to rotate Julia Set clockwise or anti-clockwise.
+- Press 'V' to cycle through variants (Standard / Burning Ship / Tricorn).  
+- Press 'T' to cycle through color themes.
+- Press &#8593;/&#8595; to shift color theme up or down.
+- Press &#8592;/&#8594; to rotate Julia Set clockwise or anti-clockwise.
+- Press '&#10227; to turn Julia spin animation on or off.'
 - Press 'E' to cycle exponent (2 - 6).
 
 ## To view and deploy as a web page
