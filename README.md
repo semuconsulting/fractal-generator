@@ -4,11 +4,11 @@ Just a bit of fun...
 
 A JavaScript implementation of an interactive fractal generator.  It supports both Mandelbrot and Julia modes and 'Standard', 'Burning Ship' and 'Tricorn' variants using a variety of color rendering themes.  
 
-Fractal settings can be configured via a series of quick-set buttons or via a more comprehensive configuration form, which allows specific coordinates to be entered in complex (real/imaginaary) notation. The application also supports basic 'Zoom In' and 'Julia Spin' animation.
+Fractal settings can be configured via a series of quick-set buttons or via a more comprehensive configuration form, which allows specific coordinates to be entered in complex (real/imaginary) notation. The application also supports basic 'Zoom In' and 'Julia Spin' animation.
 
 ![full app screenshot ubx](/images/screenshot.png)![full app screenshot ubx](/images/screenshot_open.png)
 
-The project can be deployed as an Electron (Node.js) desktop application (`index2.html`), or as a stand-alone web site `index.html`.
+## How to Use
 
 The instructions can be viewed by clicking on the `?` button:
 
@@ -30,7 +30,10 @@ The instructions can be viewed by clicking on the `?` button:
 - Press '&#10227; to turn Julia spin animation on or off.'
 - Press 'E' to cycle exponent (2 - 6).
 
-## To view and deploy as a web page
+## How to Deploy
+### To view and deploy as a web page
+
+The project can be deployed as an Electron (Node.js) desktop application (`index2.html`), or as a stand-alone web site `index.html`.
 
 To view as a web page, simply open the [index.html](./index.html) file from the project root directory in any web browser. To deploy to a web server, from your command line:
 
@@ -44,7 +47,7 @@ cp {index.html, app.js, complexlite.js, colormaps.js, fractal.js, styles.css} /v
 ```
 See, for example: [fractal-generator](https://www.algolvariables.com/fractals/)
 
-## To build and deploy as a desktop application
+### To build and deploy as a desktop application
 
 To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
 
