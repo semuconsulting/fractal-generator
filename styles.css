@@ -35,7 +35,7 @@ div.canvas {
 
 div.notes {
     background-color: white;
-    width: 85%;
+    width: 90%;
     font-size: .8em;
     color: grey;
 }
@@ -50,16 +50,6 @@ div.settings {
     color: grey;
     border:1px solid grey;
     border-radius: 8px;
-}
-
-div.settingstable {
-    float: left;
-    width: 85%;
-}
-
-div.settingsbtn {
-    float: left;
-    width: 15%;
 }
 
 header {
@@ -139,6 +129,13 @@ button:hover {
 
 button#btnPlot {
     width: 80px;
+}
+
+td.settingsbtn {
+    align-content: center;
+    font-size: .8em;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .modal {

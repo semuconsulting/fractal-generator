@@ -20,7 +20,7 @@ function fractalStart() {
     const TRICORN = 2;
     const PHOENIX = 3;
     const MINITERM = 100; // Minimum iterations for Mandelbrot
-    const MINITERJ = 400; // Minimum iterations for Julia
+    const MINITERJ = 200; // Minimum iterations for Julia
     const SETMODES = [
         "Mandelbrot",
         "Julia",
@@ -41,8 +41,9 @@ function fractalStart() {
         "Banded RGB",
         "Grayscale",
     ];
-    const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnMode", "btnVariant", "btnColor", "btnColorUp", "btnColorDown",
-        "btnJulia", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin", "btnExponent", "btnPlot"];
+    const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
+        "btnColor", "btnColorUp", "btnColorDown", "btnJulia", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
+        "btnExponent", "btnPlot"];
 
     var canvas = document.getElementById("fractal");
     var ctx = canvas.getContext("2d");
@@ -66,6 +67,7 @@ function fractalStart() {
     var zoominc = 1.5; // zoom in/out increment
     var duration = 0;
     var spinning = false;
+    var zoomanimate = false;
     var spininc = 1; // Julia rotate/spin increment in degrees
     var swapaxes = false;
 
@@ -115,6 +117,9 @@ function fractalStart() {
         // Draw zooming area if zooming
         doZooming();
 
+        // Zoom in if in animated zoom mode
+        doZoomAnimate();
+
         // If in Spinning Julia mode
         doSpinning();
 
@@ -135,6 +140,7 @@ function fractalStart() {
         setvar = 0;
         autoiter = true;
         spinning = false;
+        zoomanimate = false;
         spininc = 1;
         updateInfo();
     }
@@ -392,9 +398,11 @@ function fractalStart() {
 
     // Arbitrary algorithm to derive 'optimal' max iterations for a given
     // zoom level, enhancing legibility at higher magnifications.
-    function getAutoiter(zoom, setmode = 0) {
+    // Equates to around 1000 iterations at the maximum practical zoom level
+    // of 1e14.
+    function getAutoiter(zoom, setmode) {
         var miniter = setmode === JULIA ? MINITERJ : MINITERM;
-        return Math.max(miniter, parseInt(Math.abs(1000 * Math.log(1 / Math.sqrt(zoom)))));
+        return Math.max(miniter, parseInt(Math.abs(60 * Math.log(1 / Math.sqrt(zoom)))));
     }
 
     // Mouse down handler.
@@ -499,6 +507,15 @@ function fractalStart() {
             case "btnZoomIn": // zoom in
                 zoom *= zoominc;
                 break;
+            case "btnZoomAnimate": // zoom animation
+                zoomanimate = !zoomanimate;
+                var btn = document.getElementById("btnZoomAnimate");
+                if (zoomanimate) {
+                    btn.style.backgroundColor = "darkseagreen";
+                } else {
+                    btn.style.backgroundColor = "lightgrey";
+                }
+                break;
             case "btnReset": // r = reset to defaults
                 reset();
                 break;
@@ -562,6 +579,7 @@ function fractalStart() {
                 var inzoffim = parseFloat(document.getElementById("zoffim").value);
                 var expset = parseInt(document.getElementById("expset").value);
                 var maxiset = parseInt(document.getElementById("maxiset").value);
+                autoiter = document.getElementById("autoiter").checked;
                 var zoomset = parseFloat(document.getElementById("zoomset").value);
                 var zoomincset = parseFloat(document.getElementById("zoomincset").value);
                 var spinincset = parseFloat(document.getElementById("spinincset").value);
@@ -626,6 +644,7 @@ function fractalStart() {
             elementSet("expset", exponent);
             elementSet("modeset", setmode);
             elementSet("maxiset", maxiter);
+            checkboxSet("autoiter", autoiter);
             elementSet("zoomset", zoom);
             elementSet("zoomincset", zoominc);
             elementSet("spinincset", spininc);
@@ -659,6 +678,12 @@ function fractalStart() {
         }
     }
 
+    // Helper function to set checkbox value.
+    function checkboxSet(id, value) {
+        var ckb = document.getElementById(id);
+        ckb.checked = value;
+    }
+
     // Draw selection rectangle.
     function doZooming() {
         if (zooming) {
@@ -667,6 +692,15 @@ function fractalStart() {
             ctx.strokeStyle = "yellow";
             ctx.rect(zoomarea.x, zoomarea.y, zoomarea.w, zoomarea.h);
             ctx.stroke();
+        }
+    }
+
+    // Animate zooming in.
+    // zoominc determines the speed of zooming.
+    function doZoomAnimate() {
+        if (zoomanimate) {
+            zoom *= zoominc;
+            generateImage();
         }
     }
 

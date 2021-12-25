@@ -25,6 +25,7 @@
       <button id="btnReset">R</button>
       <button id="btnZoomIn">I</button>
       <button id="btnZoomOut">O</button>
+      <button id="btnZoomAnimate">Z</button>
       <button id="btnMode">M</button>
       <button id="btnJulia">J</button>
       <button id="btnVariant">V</button>
@@ -53,6 +54,7 @@
             <td><input type="text" id="pre" name="pre"></td>
             <td><label class="wid2" for="pim">im:</label></td>
             <td><input type="text" id="pim" name="pim"> i</td>
+            <td rowspan=3 colspan=2 class="settingsbtn"><button id="btnPlot">UPDATE</button></td>
           </tr>
           <tr>
             <td><label class="wid2" for="cre">c re:</label></td>
@@ -71,6 +73,9 @@
             <td><input type="text" id="expset" name="expset"></td>
             <td><label class="wid2" for="maxiset">Max Iter:</label></td>
             <td><input type="text" id="maxiset" name="maxiset"></td>
+            <td><label class="wid2" for="autoiteriset">Auto Iter:</label>
+              <input type="checkbox" id="autoiter" name="autoiter" value="1">
+            </td>
           </tr>
           <tr>
             <td><label class="wid2" for="zoomset">Zoom:</label></td>
@@ -99,9 +104,6 @@
           </tr>
         </table>
       </div> <!-- ./settingstable -->
-      <div class="settingsbtn">
-        <button id="btnPlot">PLOT</button>
-      </div> <!-- ./settingsbtn -->
     </div> <!-- ./settings -->
     <div id="helpModal" class="modal">
       <div class="modal-content">
@@ -139,6 +141,10 @@
           <tr>
             <td>Click 'O'</td>
             <td>Zoom out at current coordinate.</td>
+          </tr>
+          <tr>
+            <td>Click 'Z'</td>
+            <td>Animate zooming at current coordinate.</td>
           </tr>
           <tr>
             <td>Click 'M'</td>
