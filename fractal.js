@@ -43,7 +43,7 @@ function fractalStart() {
     ];
     const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
         "btnColor", "btnColorUp", "btnColorDown", "btnJulia", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
-        "btnExponent", "btnPlot"];
+        "btnExponent", "btnPlot", "btnSettings"];
 
     var canvas = document.getElementById("fractal");
     var ctx = canvas.getContext("2d");
@@ -70,14 +70,6 @@ function fractalStart() {
     var zoomanimate = false;
     var spininc = 1; // Julia rotate/spin increment in degrees
     var swapaxes = false;
-
-    // Set up the settings division toggle.
-    var settings = document.getElementById("settings");
-    var btnSettings = document.getElementById("btnSettings");
-    btnSettings.onclick = function () {
-        settings.style.display = settings.style.display === "block" ? "none" : "block";
-        updateInfo();
-    }
 
     // Initialize the interactive canvas.
     function init() {
@@ -500,6 +492,7 @@ function fractalStart() {
     // Button click handlers.
     function onButtonClick(e) {
         inProgress(true);
+        var btn = document.getElementById(e.target.id);
         switch (e.target.id) {
             case "btnZoomOut": // zoom out
                 zoom /= zoominc;
@@ -509,11 +502,10 @@ function fractalStart() {
                 break;
             case "btnZoomAnimate": // zoom animation
                 zoomanimate = !zoomanimate;
-                var btn = document.getElementById("btnZoomAnimate");
                 if (zoomanimate) {
                     btn.style.backgroundColor = "darkseagreen";
                 } else {
-                    btn.style.backgroundColor = "lightgrey";
+                    btn.style.backgroundColor = "white";
                 }
                 break;
             case "btnReset": // r = reset to defaults
@@ -563,11 +555,10 @@ function fractalStart() {
                 break;
             case "btnJuliaSpin": // toggle automated Julia spin
                 spinning = !spinning;
-                var btn = document.getElementById("btnJuliaSpin");
                 if (spinning && setmode === JULIA) {
                     btn.style.backgroundColor = "darkseagreen";
                 } else {
-                    btn.style.backgroundColor = "lightgrey";
+                    btn.style.backgroundColor = "white";
                 }
                 break;
             case "btnPlot": // plot using manually entered parameters
@@ -607,6 +598,16 @@ function fractalStart() {
                 if (!isNaN(spinincset)) {
                     spininc = spinincset;
                 }
+                break;
+            case "btnSettings": {
+                settings.style.display = settings.style.display === "block" ? "none" : "block";
+                if (settings.style.display === "block") {
+                    btn.style.backgroundColor = "lightblue";
+                } else {
+                    btn.style.backgroundColor = "white";
+                }
+                break;
+            }
 
         }
 

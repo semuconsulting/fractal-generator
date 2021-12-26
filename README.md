@@ -4,7 +4,7 @@ Just a bit of fun...
 
 A JavaScript implementation of an interactive fractal generator.  It supports both Mandelbrot and Julia modes and 'Standard', 'Burning Ship' and 'Tricorn' variants using a variety of color rendering themes.  
 
-Fractal settings can be configured via a series of quick-set buttons or via a more comprehensive configuration form, which allows specific coordinates to be entered in complex (real/imaginary) notation. The application also supports basic 'Zoom In' and 'Julia Spin' animation.
+Fractal can be quickly configured via a set of 'quick-set' buttons, or more comprehensively via a manual configuration form which allows specific coordinates to be entered in complex (real/imaginary) notation. The application also supports basic 'Zoom In' and 'Julia Spin' animation.
 
 ![full app screenshot ubx](/images/screenshot.png)![full app screenshot ubx](/images/screenshot_open.png)
 
@@ -12,7 +12,7 @@ Fractal settings can be configured via a series of quick-set buttons or via a mo
 
 The instructions can be viewed by clicking on the `?` button:
 
-- Click anywhere in the image to zoom in at that coordinate.
+- Click anywhere in the image to zoom in at that coordinates.
 - Click and drag to zoom into drawn area.
 - Ctrl + Click to zoom out by fixed factor.
 - Shift + Click to centre at current coordinates.
@@ -20,7 +20,7 @@ The instructions can be viewed by clicking on the `?` button:
 - Press 'R' to reset to default settings.
 - Press 'I' to zoom in.
 - Press 'O' to zoom out.
-- Press 'Z' to turn zoom animation on or off.
+- Press 'Z' to turn zoom animation on or off. A series of frames will be automatically generated, centered at the current coordinates with the zoom level incremented by the 'zoom increment' amount.
 - Press 'M' to cycle through modes (Mandelbrot / Julia).
 - Press 'J' to enter Julia mode at current coordinates.
 - Press 'V' to cycle through variants (Standard / Burning Ship / Tricorn).  

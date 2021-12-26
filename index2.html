@@ -20,22 +20,22 @@
     </div> <!-- /.canvas -->
     <div class="notes text-center" id="notes">
       <p></p>
-      <button id="btnReset">R</button>
-      <button id="btnZoomIn">I</button>
-      <button id="btnZoomOut">O</button>
-      <button id="btnZoomAnimate">Z</button>
-      <button id="btnMode">M</button>
-      <button id="btnJulia">J</button>
-      <button id="btnVariant">V</button>
-      <button id="btnExponent">E</button>
-      <button id="btnColor">T</button>
-      <button id="btnColorUp">&#8593;</button>
-      <button id="btnColorDown">&#8595;</button>
-      <button id="btnJuliaDown">&#8592;</button>
-      <button id="btnJuliaUp">&#8594;</button>
-      <button id="btnJuliaSpin">&#10227;</button>
-      <button id="btnSettings">&#9881;</button>
-      <button id="btnHelp">?</button>
+      <img id="btnReset" src="./resources/iconmonstr-gear-12-24.png" />
+      <img id="btnZoomIn" src="./resources/iconmonstr-magnifier-7-24.png" />
+      <img id="btnZoomOut" src="./resources/iconmonstr-magnifier-8-24.png" />
+      <img id="btnZoomAnimate" src="./resources/iconmonstr-magnifier-11-24.png" />
+      <img id="btnMode" src="./resources/iconmonstr-view-8-24.png" />
+      <img id="btnVariant" src="./resources/iconmonstr-view-5-24.png" />
+      <img id="btnExponent" src="./resources/exponent.png" />
+      <img id="btnColor" src="./resources/iconmonstr-paintbrush-7-24.png" />
+      <img id="btnColorUp" src="./resources/iconmonstr-arrow-29-24.png" />
+      <img id="btnColorDown" src="./resources/iconmonstr-arrow-28-24.png" />
+      <img id="btnJulia" src="./resources/juliaset.png" />
+      <img id="btnJuliaDown" src="./resources/iconmonstr-redo-7-24.png" />
+      <img id="btnJuliaUp" src="./resources/iconmonstr-undo-7-24.png" />
+      <img id="btnJuliaSpin" src="./resources/iconmonstr-loading-10-24.png" />
+      <img id="btnSettings" src="./resources/iconmonstr-gear-2-24.png" />
+      <img id="btnHelp" src="./resources/iconmonstr-help-3-24.png" />
       <p></p>
       <span id="ppos"></span><span id="cpos"></span>
       <span id="zoom"></span><span id="exponent"></span><br>
@@ -150,12 +150,12 @@
             <td>Cycle through modes.</td>
           </tr>
           <tr>
-            <td>Click 'J'</td>
-            <td>Enter Julia mode at current coordinates.</td>
-          </tr>
-          <tr>
             <td>Click 'V'</td>
             <td>Cycle through variants.</td>
+          </tr>
+          <tr>
+            <td>Click 'E'</td>
+            <td>Cycle exponent (2-6).</td>
           </tr>
           <tr>
             <td>Click 'T'</td>
@@ -166,6 +166,10 @@
             <td>Shift color theme up or down.</td>
           </tr>
           <tr>
+            <td>Click 'J'</td>
+            <td>Enter Julia mode at current coordinates.</td>
+          </tr>
+          <tr>
             <td>Click '&#8592;/&#8594;'</td>
             <td>Rotate Julia Set clockwise or anti-clockwise.</td>
           </tr>
@@ -173,14 +177,9 @@
             <td>Click '&#10227;'</td>
             <td>Turn 'Julia spin' animation on or off.</td>
           </tr>
-          <tr>
-            <td>Click 'E'</td>
-            <td>Cycle exponent (2-6).</td>
-          </tr>
         </table>
-        <p>
+        <p class="font-7">
           © algolvariables 2021. BSD 3-Clause License.
-          <a href="https://github.com/Algol-Variables/fractal-generator">GitHub Home Page</a>
         </p>
       </div> <!-- /.modal-content -->
     </div>

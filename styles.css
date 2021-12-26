@@ -25,8 +25,11 @@ div.main-container {
     overflow: auto;
     margin: 0 auto;
     padding: 0;
-    /* padding-bottom:40px; */
     width: 100%;
+}
+
+div.web {
+    padding-bottom:40px;
 }
 
 div.canvas {
@@ -55,6 +58,15 @@ div.settings {
 header {
     margin: 0 auto;
     font-size: .8em;
+}
+
+footer {
+    margin: 0 auto;
+    font-size: .8em;
+    color: grey;
+    text-align: center;
+    padding-top: 8px;
+	padding-bottom: 8px
 }
 
 span {
@@ -120,7 +132,6 @@ button {
     vertical-align: middle;
     color: darkslategrey;
     background-color: lightgrey;
-    font-size: 1.5em;
 }
 
 button:hover {
@@ -129,6 +140,14 @@ button:hover {
 
 button#btnPlot {
     width: 80px;
+}
+
+img {
+    padding: 5px;
+}
+
+img:hover {
+    background-color: lightgrey;
 }
 
 td.settingsbtn {
