@@ -2,6 +2,8 @@
 // Interactive fractal generation using JavaScript and the 
 // HTML5 Canvas element.
 //
+// Uses Complex object type from complexlite.js library.
+//
 // fractal() function features a number of optimisations to minimise the 
 // number of maths operations per iteration.
 //
@@ -10,6 +12,37 @@
 // BSD 3-Clause License
 // ------------------------------------------------------------------------
 "use strict";
+
+function start() {
+    // Get the help modal
+    var modal = document.getElementById("helpModal");
+
+    // Get the button that opens the modal
+    var btnHelp = document.getElementById("btnHelp");
+
+    // Get the <span> element that closes the modal.
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal.
+    btnHelp.onclick = function () {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal.
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it.
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Start the interactive fractal window.
+    fractalStart()
+}
 
 function fractalStart() {
 
@@ -79,7 +112,7 @@ function fractalStart() {
         canvas.addEventListener("mousemove", onMouseMove);
         canvas.addEventListener("mouseup", onMouseUp);
 
-        // Add button events
+        // Add button event handlers
         for (let i in BUTTONS) {
             document.getElementById(BUTTONS[i]).addEventListener("click", onButtonClick);
         }
@@ -134,6 +167,7 @@ function fractalStart() {
         spinning = false;
         zoomanimate = false;
         spininc = 1;
+        swapaxes = false;
         updateInfo();
     }
 
@@ -146,7 +180,7 @@ function fractalStart() {
         for (x = 0; x < imagew; x += 1) {
             for (y = 0; y < imageh; y += 1) {
                 // Convert pixel coordinate to complex plane coordinate
-                ppos = ptoc(imagew, imageh, x, y, zoffpos, zoom);
+                ppos = ptoc(imagew, imageh, x, y, zoffpos, zoom, swapaxes);
                 // Calculate fractal escape scalars
                 scalars = fractal(ppos, cpos, exponent, maxiter, radius);
                 // Pass escape scalars to pixel coloring algorithm
@@ -162,9 +196,21 @@ function fractalStart() {
 
     // Converts pixel (x/y) coordinates to complex (real/imaginary) space coordinates
     // (zoffpos is always the complex offset).
-    function ptoc(width, height, x, y, zoffpos, zoom) {
-        var re = zoffpos.re + ((width / height) * (x - width / 2) / (zoom * width / 2));
-        var im = zoffpos.im + (-1 * (y - height / 2) / (zoom * height / 2));
+    function ptoc(width, height, x, y, zoffpos, zoom, swapaxes) {
+        var xt, reo, imo;
+        if (!swapaxes) { // swap X/Y axes
+            reo = zoffpos.re;
+            imo = zoffpos.im;
+        }
+        else {
+            xt = x;
+            x = y;
+            y = xt;
+            reo = zoffpos.im;
+            imo = -zoffpos.re;
+        }
+        var re = reo + ((width / height) * (x - width / 2) / (zoom * width / 2));
+        var im = imo + (-1 * (y - height / 2) / (zoom * height / 2));
         return new Complex(re, im);
     }
 
@@ -399,20 +445,30 @@ function fractalStart() {
 
     // Mouse down handler.
     function onMouseDown(e) {
+        var xm, ym, tm;
         var regen = true;
         zooming = false;
         var mpos = getMousePos(canvas, e);
-        pinit = ptoc(imagew, imageh, mpos.x, mpos.y, zoffpos, zoom);
+        if (!swapaxes) {
+            xm = mpos.x;
+            ym = mpos.y;
+        }
+        else {
+            tm = mpos.y;
+            ym = mpos.x;
+            xm = tm;
+        }
+        pinit = ptoc(imagew, imageh, xm, ym, zoffpos, zoom);
         inProgress(true);
 
         if (e.altKey) { // toggle between Julia and Mandelbrot
             if (setmode === MANDELBROT) {
                 setmode = JULIA;
                 cpos = pinit;
-                zoffpos.set(0, 0);
+                //zoffpos.set(0, 0);
             } else {
                 setmode = MANDELBROT;
-                zoffpos.set(-0.5, 0);
+                //zoffpos.set(-0.5, 0);
             }
         }
         else if (e.shiftKey) { // Centre image at mouse position
@@ -574,7 +630,12 @@ function fractalStart() {
                 var zoomset = parseFloat(document.getElementById("zoomset").value);
                 var zoomincset = parseFloat(document.getElementById("zoomincset").value);
                 var spinincset = parseFloat(document.getElementById("spinincset").value);
-                var shiftset = document.getElementById("shiftset").value
+                var shiftset = document.getElementById("shiftset").value;
+                setmode = document.getElementById("modeset").selectedIndex;
+                setvar = document.getElementById("variantset").selectedIndex;
+                theme = document.getElementById("themeset").selectedIndex;
+                swapaxes = document.getElementById("swapaxes").checked;
+
                 if (!isNaN(inpre) && !isNaN(inpim)) {
                     pinit.set(inpre, inpim);
                 }
@@ -646,16 +707,17 @@ function fractalStart() {
             elementSet("cim", cpos.im);
             elementSet("zoffre", zoffpos.re);
             elementSet("zoffim", zoffpos.im);
-            elementSet("expset", exponent);
             elementSet("modeset", setmode);
+            elementSet("variantset", setvar);
+            elementSet("expset", exponent);
             elementSet("maxiset", maxiter);
             checkboxSet("autoiter", autoiter);
             elementSet("zoomset", zoom);
             elementSet("zoomincset", zoominc);
             elementSet("spinincset", spininc);
-            elementSet("variantset", setvar);
             elementSet("themeset", theme);
             elementSet("shiftset", shift);
+            checkboxSet("swapaxes", swapaxes);
         }
     }
 
@@ -677,6 +739,9 @@ function fractalStart() {
         switch (sel.nodeName) {
             case "SPAN": // span element
                 sel.innerHTML = value;
+                break;
+            case "SELECT": // select element
+                sel.selectedIndex = value;
                 break;
             default: // input element
                 sel.value = value;

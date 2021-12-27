@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <link href="./styles.css" rel="stylesheet">
   <script src="./colormaps.js"></script>
-  <script src="./app.js"></script>
   <script src="./complexlite.js"></script>
   <script src="./fractal.js"></script>
   <title>Fractal Generator</title>
@@ -30,7 +29,7 @@
       <img id="btnVariant" src="./resources/btnVariant.png" />
       <img id="btnExponent" src="./resources/btnExponent.png" />
       <img id="btnColor" src="./resources/btnColor.png" />
-      <img id="btnColorUp" src="./resources/btnColorUp" />
+      <img id="btnColorUp" src="./resources/btnColorUp.png" />
       <img id="btnColorDown" src="./resources/btnColorDown.png" />
       <img id="btnJulia" src="./resources/btnJulia.png" />
       <img id="btnJuliaDown" src="./resources/btnJuliaDown.png" />
@@ -101,7 +100,11 @@
             <td><label class="wid2" for="themeset">Color Theme:</label></td>
             <td><select id="themeset" name="themeset"></select></td>
             <td><label class="wid2" for="shiftset">Shift:</label></td>
-            <td colspan=2><input class="wid2" id="shiftset" type="range" min=1 max=100 value = 0></td>
+            <td colspan=2><input class="wid2" id="shiftset" type="range" min=0 max=100 value = 0></td>
+          </tr>
+          <tr>
+            <td><label class="wid2" for="swapaxes">Swap X/Y:</label></td>
+            <td><input type="checkbox" id="swapaxes" name="swapaxes"></td>
           </tr>
         </table>
       </div> <!-- ./settingstable -->
