@@ -81,12 +81,21 @@ function fractalStart() {
         "btnColor", "btnColorUp", "btnColorDown", "btnJulia", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
         "btnExponent", "btnPlot", "btnSettings"];
 
+    // Create and size canvas relative to window size.
     var canvasdiv = document.getElementById("canvas");
     var canvas = document.createElement('canvas');
     canvas.id = "fractal";
-    canvas.height = document.body.clientHeight * CANVAS_SIZE;
-    canvas.width = canvas.height * ASPECT_RATIO;
+    var size = getSize();
+    if (size.width >= size.height) {
+        canvas.height = size.height * CANVAS_SIZE;
+        canvas.width = Math.floor(canvas.height * ASPECT_RATIO);
+    }
+    else {
+        canvas.width = size.width * CANVAS_SIZE;
+        canvas.height = Math.floor(canvas.width / ASPECT_RATIO);
+    }
     canvasdiv.appendChild(canvas);
+
     var ctx = canvas.getContext("2d");
     var imagew = canvas.width; // Pixels
     var imageh = canvas.height; // Pixels
@@ -156,6 +165,11 @@ function fractalStart() {
         // If in Spinning Julia mode
         doSpinning();
 
+    }
+
+    // Get size of window.
+    function getSize() {
+        return { width: window.innerWidth, height: window.innerHeight };
     }
 
     // Reset to default settings.
