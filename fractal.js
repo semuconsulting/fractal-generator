@@ -2,7 +2,7 @@
 // Interactive fractal generation using JavaScript and the 
 // HTML5 Canvas element.
 //
-// fractal() function Features a number of optimisations to minimise the 
+// fractal() function features a number of optimisations to minimise the 
 // number of maths operations per iteration.
 //
 // Copyright (c) 2021 Algol Variables
@@ -698,9 +698,13 @@ function fractalStart() {
 
     // Animate zooming in.
     // zoominc determines the speed of zooming.
+    // Zoom limited to 1e15 due to pixelation.
     function doZoomAnimate() {
         if (zoomanimate) {
-            zoom *= zoominc;
+            if (zoom < 1e15) {
+                zoom *= zoominc;
+            }
+            else { zoomanimate = false }
             generateImage();
         }
     }
