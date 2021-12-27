@@ -530,10 +530,10 @@ function fractalStart() {
                 exponent = exponent > 6 ? 2 : exponent += 1;
                 break;
             case "btnColorUp": // up arrow = shift color theme up
-                shift = (shift + 5) % 100;
+                shift = (shift - 5) % 100;
                 break;
             case "btnColorDown": // down arrow = shift color theme down
-                shift = (shift - 5) % 100;
+                shift = (shift + 5) % 100;
                 if (shift < 0) {
                     shift = 100 + shift;
                 }
@@ -574,6 +574,7 @@ function fractalStart() {
                 var zoomset = parseFloat(document.getElementById("zoomset").value);
                 var zoomincset = parseFloat(document.getElementById("zoomincset").value);
                 var spinincset = parseFloat(document.getElementById("spinincset").value);
+                var shiftset = document.getElementById("shiftset").value
                 if (!isNaN(inpre) && !isNaN(inpim)) {
                     pinit.set(inpre, inpim);
                 }
@@ -597,6 +598,9 @@ function fractalStart() {
                 }
                 if (!isNaN(spinincset)) {
                     spininc = spinincset;
+                }
+                if (!isNaN(shiftset)) {
+                    shift = shiftset;
                 }
                 break;
             case "btnSettings": {
@@ -651,6 +655,7 @@ function fractalStart() {
             elementSet("spinincset", spininc);
             elementSet("variantset", setvar);
             elementSet("themeset", theme);
+            elementSet("shiftset", shift);
         }
     }
 
