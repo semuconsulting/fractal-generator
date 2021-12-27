@@ -13,6 +13,9 @@
 // ------------------------------------------------------------------------
 "use strict";
 
+const ASPECT_RATIO = 1.5; // aspect ratio 4:3
+const CANVAS_SIZE = 0.8; // image size relative to document
+
 function start() {
     // Get the help modal
     var modal = document.getElementById("helpModal");
@@ -78,7 +81,12 @@ function fractalStart() {
         "btnColor", "btnColorUp", "btnColorDown", "btnJulia", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
         "btnExponent", "btnPlot", "btnSettings"];
 
-    var canvas = document.getElementById("fractal");
+    var canvasdiv = document.getElementById("canvas");
+    var canvas = document.createElement('canvas');
+    canvas.id = "fractal";
+    canvas.height = document.body.clientHeight * CANVAS_SIZE;
+    canvas.width = canvas.height * ASPECT_RATIO;
+    canvasdiv.appendChild(canvas);
     var ctx = canvas.getContext("2d");
     var imagew = canvas.width; // Pixels
     var imageh = canvas.height; // Pixels
@@ -180,7 +188,7 @@ function fractalStart() {
         for (x = 0; x < imagew; x += 1) {
             for (y = 0; y < imageh; y += 1) {
                 // Convert pixel coordinate to complex plane coordinate
-                ppos = ptoc(imagew, imageh, x, y, zoffpos, zoom, swapaxes);
+                ppos = ptoc(imagew, imageh, x, y, zoffpos, zoom);
                 // Calculate fractal escape scalars
                 scalars = fractal(ppos, cpos, exponent, maxiter, radius);
                 // Pass escape scalars to pixel coloring algorithm
@@ -196,21 +204,18 @@ function fractalStart() {
 
     // Converts pixel (x/y) coordinates to complex (real/imaginary) space coordinates
     // (zoffpos is always the complex offset).
-    function ptoc(width, height, x, y, zoffpos, zoom, swapaxes) {
-        var xt, reo, imo;
-        if (!swapaxes) { // swap X/Y axes
-            reo = zoffpos.re;
-            imo = zoffpos.im;
-        }
-        else {
-            xt = x;
+    function ptoc(width, height, x, y, zoffpos, zoom) {
+        var temp;
+        if (swapaxes) { // X/Y axes are swapped
+            temp = x;
             x = y;
-            y = xt;
-            reo = zoffpos.im;
-            imo = -zoffpos.re;
+            y = temp;
+            temp = width;
+            width = height;
+            height = temp;
         }
-        var re = reo + ((width / height) * (x - width / 2) / (zoom * width / 2));
-        var im = imo + (-1 * (y - height / 2) / (zoom * height / 2));
+        var re = zoffpos.re + ((width / height) * (x - width / 2) / (zoom * width / 2));
+        var im = zoffpos.im + (-1 * (y - height / 2) / (zoom * height / 2));
         return new Complex(re, im);
     }
 
@@ -445,19 +450,12 @@ function fractalStart() {
 
     // Mouse down handler.
     function onMouseDown(e) {
-        var xm, ym, tm;
+        var xm, ym;
         var regen = true;
         zooming = false;
         var mpos = getMousePos(canvas, e);
-        if (!swapaxes) {
-            xm = mpos.x;
-            ym = mpos.y;
-        }
-        else {
-            tm = mpos.y;
-            ym = mpos.x;
-            xm = tm;
-        }
+        xm = mpos.x;
+        ym = mpos.y;
         pinit = ptoc(imagew, imageh, xm, ym, zoffpos, zoom);
         inProgress(true);
 
