@@ -78,22 +78,16 @@ function fractalStart() {
         "Grayscale",
     ];
     const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
-        "btnColor", "btnColorUp", "btnColorDown", "btnJulia", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
-        "btnExponent", "btnPlot", "btnSettings"];
+        "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
+        "btnExponent", "btnPlot", "btnSettings", "btnSave"];
 
     // Create and size canvas relative to window size.
     var canvasdiv = document.getElementById("canvas");
     var canvas = document.createElement('canvas');
     canvas.id = "fractal";
     var size = getSize();
-    if (size.width >= size.height) {
-        canvas.height = Math.floor(size.height * CANVAS_SIZE);
-        canvas.width = Math.floor(canvas.height * ASPECT_RATIO);
-    }
-    else {
-        canvas.width = Math.floor(size.width * CANVAS_SIZE);
-        canvas.height = Math.floor(canvas.width / ASPECT_RATIO);
-    }
+    canvas.width = size.width;
+    canvas.height = size.height;
     canvasdiv.appendChild(canvas);
 
     var ctx = canvas.getContext("2d");
@@ -167,9 +161,20 @@ function fractalStart() {
 
     }
 
-    // Get size of window.
+    // Get size of canvas.
     function getSize() {
-        return { width: window.innerWidth, height: window.innerHeight };
+        var width, height;
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        if (w >= h) {
+            height = Math.floor(h * CANVAS_SIZE);
+            width = Math.floor(height * ASPECT_RATIO);
+        }
+        else {
+            width = Math.floor(w * CANVAS_SIZE);
+            height = Math.floor(width / ASPECT_RATIO);
+        }
+        return { width, height }
     }
 
     // Reset to default settings.
@@ -612,68 +617,12 @@ function fractalStart() {
             case "btnJuliaUp": // right arrow = rotate Julia right
                 cpos = cpos.rotate(-spininc * Math.PI / 180);
                 break;
-            case "btnJulia": // j = switch to nominal Julia set at current location
-                setmode = JULIA;
-                zoom = 0.75;
-                zoffpos.set(0, 0);
-                cpos = pinit;
-                if (setvar === PHOENIX) {
-                    cpos.set(0.5667, 0);
-                }
-                break;
             case "btnJuliaSpin": // toggle automated Julia spin
                 spinning = !spinning;
                 if (spinning && setmode === JULIA) {
                     btn.style.backgroundColor = "darkseagreen";
                 } else {
                     btn.style.backgroundColor = "white";
-                }
-                break;
-            case "btnPlot": // plot using manually entered parameters
-                var inpre = parseFloat(document.getElementById("pre").value);
-                var inpim = parseFloat(document.getElementById("pim").value);
-                var incre = parseFloat(document.getElementById("cre").value);
-                var incim = parseFloat(document.getElementById("cim").value);
-                var inzoffre = parseFloat(document.getElementById("zoffre").value);
-                var inzoffim = parseFloat(document.getElementById("zoffim").value);
-                var expset = parseInt(document.getElementById("expset").value);
-                var maxiset = parseInt(document.getElementById("maxiset").value);
-                autoiter = document.getElementById("autoiter").checked;
-                var zoomset = parseFloat(document.getElementById("zoomset").value);
-                var zoomincset = parseFloat(document.getElementById("zoomincset").value);
-                var spinincset = parseFloat(document.getElementById("spinincset").value);
-                var shiftset = document.getElementById("shiftset").value;
-                setmode = document.getElementById("modeset").selectedIndex;
-                setvar = document.getElementById("variantset").selectedIndex;
-                theme = document.getElementById("themeset").selectedIndex;
-                swapaxes = document.getElementById("swapaxes").checked;
-
-                if (!isNaN(inpre) && !isNaN(inpim)) {
-                    pinit.set(inpre, inpim);
-                }
-                if (!isNaN(incre) && !isNaN(incim)) {
-                    cpos.set(incre, incim);
-                }
-                if (!isNaN(inzoffre) && !isNaN(inzoffim)) {
-                    zoffpos.set(inzoffre, inzoffim);
-                }
-                if (!isNaN(expset)) {
-                    exponent = expset;
-                }
-                if (!isNaN(maxiset)) {
-                    maxiter = maxiset;
-                }
-                if (!isNaN(zoomset)) {
-                    zoom = zoomset;
-                }
-                if (!isNaN(zoomincset)) {
-                    zoominc = zoomincset;
-                }
-                if (!isNaN(spinincset)) {
-                    spininc = spinincset;
-                }
-                if (!isNaN(shiftset)) {
-                    shift = shiftset;
                 }
                 break;
             case "btnSettings": {
@@ -685,8 +634,15 @@ function fractalStart() {
                 }
                 break;
             }
-
+            case "btnPlot": // plot using manually entered parameters
+                doPlot();
+                break;
+            case "btnSave": {
+                doSave();
+                break;
+            }
         }
+
 
         // Generate a new image
         generateImage();
@@ -694,6 +650,67 @@ function fractalStart() {
         // Update information panel
         updateInfo();
 
+    }
+
+    // Plot image using manual settings.
+    function doPlot() {
+        var inpre = parseFloat(document.getElementById("pre").value);
+        var inpim = parseFloat(document.getElementById("pim").value);
+        var incre = parseFloat(document.getElementById("cre").value);
+        var incim = parseFloat(document.getElementById("cim").value);
+        var inzoffre = parseFloat(document.getElementById("zoffre").value);
+        var inzoffim = parseFloat(document.getElementById("zoffim").value);
+        var expset = parseInt(document.getElementById("expset").value);
+        var maxiset = parseInt(document.getElementById("maxiset").value);
+        autoiter = document.getElementById("autoiter").checked;
+        var zoomset = parseFloat(document.getElementById("zoomset").value);
+        var zoomincset = parseFloat(document.getElementById("zoomincset").value);
+        var spinincset = parseFloat(document.getElementById("spinincset").value);
+        var shiftset = document.getElementById("shiftset").value;
+        setmode = document.getElementById("modeset").selectedIndex;
+        setvar = document.getElementById("variantset").selectedIndex;
+        theme = document.getElementById("themeset").selectedIndex;
+        swapaxes = document.getElementById("swapaxes").checked;
+
+        if (!isNaN(inpre) && !isNaN(inpim)) {
+            pinit.set(inpre, inpim);
+        }
+        if (!isNaN(incre) && !isNaN(incim)) {
+            cpos.set(incre, incim);
+        }
+        if (!isNaN(inzoffre) && !isNaN(inzoffim)) {
+            zoffpos.set(inzoffre, inzoffim);
+        }
+        if (!isNaN(expset)) {
+            exponent = expset;
+        }
+        if (!isNaN(maxiset)) {
+            maxiter = maxiset;
+        }
+        if (!isNaN(zoomset)) {
+            zoom = zoomset;
+        }
+        if (!isNaN(zoomincset)) {
+            zoominc = zoomincset;
+        }
+        if (!isNaN(spinincset)) {
+            spininc = spinincset;
+        }
+        if (!isNaN(shiftset)) {
+            shift = shiftset;
+        }
+    }
+
+    // Save image as png file.
+    function doSave() {
+  
+        var image = canvas.toDataURL(); // get canvas data
+        var tmpLink = document.createElement('a'); // create temporary link
+        tmpLink.download = 'image.png'; // set the name of the download file
+        tmpLink.href = image;
+        document.body.appendChild(tmpLink); // temporarily add link to body and initiate the download
+        tmpLink.click();
+        document.body.removeChild(tmpLink);
     }
 
     // Change cursor to indicate in progress.
@@ -711,7 +728,7 @@ function fractalStart() {
         elementSet("setmode", SETMODES[setmode]);
         elementSet("setvar", SETVARS[setvar]);
         elementSet("duration", duration + "ms");
-        elementSet("size",size.width + "x" + size.height);
+        elementSet("size", size.width + "x" + size.height);
         // Update settings panel if it's visible
         if (document.getElementById("settings").offsetParent !== null) {
             elementSet("pre", pinit.re);
