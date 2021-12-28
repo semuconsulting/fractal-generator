@@ -87,11 +87,11 @@ function fractalStart() {
     canvas.id = "fractal";
     var size = getSize();
     if (size.width >= size.height) {
-        canvas.height = size.height * CANVAS_SIZE;
+        canvas.height = Math.floor(size.height * CANVAS_SIZE);
         canvas.width = Math.floor(canvas.height * ASPECT_RATIO);
     }
     else {
-        canvas.width = size.width * CANVAS_SIZE;
+        canvas.width = Math.floor(size.width * CANVAS_SIZE);
         canvas.height = Math.floor(canvas.width / ASPECT_RATIO);
     }
     canvasdiv.appendChild(canvas);
@@ -711,6 +711,7 @@ function fractalStart() {
         elementSet("setmode", SETMODES[setmode]);
         elementSet("setvar", SETVARS[setvar]);
         elementSet("duration", duration + "ms");
+        elementSet("size",size.width + "x" + size.height);
         // Update settings panel if it's visible
         if (document.getElementById("settings").offsetParent !== null) {
             elementSet("pre", pinit.re);
