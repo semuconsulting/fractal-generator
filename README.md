@@ -28,9 +28,10 @@ The instructions can be viewed by clicking on the `?` button:
 - Press ![btnExponent](/resources/btnExponent.png) to cycle exponent (2 - 6).
 - Press ![btnColor](/resources/btnColor.png) to cycle through color themes.
 - Press ![btnColorUp](/resources/btnColorUp.png)/![btnColorDown](/resources/btnColorDown.png) to shift color theme up or down.
-- Press ![btnJulia](/resources/btnJulia.png) to enter Julia mode at current coordinates.
 - Press ![btnJuliaUp](/resources/btnJuliaUp.png)/![btnJuliaDown](/resources/btnJuliaDown.png) to rotate Julia Set clockwise or anti-clockwise.
-- Press ![btnJuliaSpin](/resources/btnJuliaSpin.png) to turn Julia spin animation on or off.'
+- Press ![btnJuliaSpin](/resources/btnJuliaSpin.png) to turn Julia spin animation on or off.
+- Press ![btnSettings](/resources/btnSettings.png) to open or close settings panel.
+- Press ![btnHelp](/resources/btnHelp.png) to open or close help panel.
 
 
 ## How to Deploy

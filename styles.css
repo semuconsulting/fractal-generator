@@ -29,11 +29,7 @@ div.main-container {
 }
 
 div.web {
-    padding-bottom:40px;
-}
-
-div.canvas {
-    background-color: white;
+    padding-bottom: 40px;
 }
 
 div.notes {
@@ -43,16 +39,17 @@ div.notes {
     color: grey;
 }
 
-div.settings {
+div.settings, div.help {
     background-color: white;
     padding: 10px;
     width: 700px;
-    height: 250px;
     display: none;
     font-size: 0.8em;
     color: grey;
-    border:1px solid grey;
+    border: 1px solid grey;
     border-radius: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 header {
@@ -66,7 +63,7 @@ footer {
     color: grey;
     text-align: center;
     padding-top: 8px;
-	padding-bottom: 8px
+    padding-bottom: 8px
 }
 
 span {
@@ -87,6 +84,7 @@ label.wid2 {
 label.wid1 {
     width: 20px;
 }
+
 .text-center {
     text-align: center;
 }
@@ -98,13 +96,6 @@ label.wid1 {
 .canvas {
     width: 100%;
     margin: 0 auto;
-}
-
-.help {
-    width: 80%;
-    margin: 0 auto;
-    font-size: .8em;
-    color: grey;
 }
 
 h1 {
@@ -142,12 +133,17 @@ button#btnPlot {
     width: 80px;
 }
 
-img {
+img.icon {
+    padding-right: 5px;
+}
+
+img.button {
     padding: 5px;
 }
 
-img:hover {
+img.button:hover {
     background-color: lightgrey;
+    cursor: pointer;
 }
 
 td.settingsbtn {
@@ -157,52 +153,50 @@ td.settingsbtn {
     padding-right: 15px;
 }
 
-.modal {
-    display: none;
-    /* Hidden by default */
-    position: fixed;
-    /* Stay in place */
-    z-index: 1;
-    /* Sit on top */
-    padding-top: 50px;
-    /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
-    overflow: auto;
-    /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0);
-    /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4);
-    /* Black w/ opacity */
-}
-
-.modal-content {
-    color: darkslategray;
-    background-color: #fefefe;
-    margin: auto;
-    padding: 10px;
-    border: 1px solid #888;
-    width: 60%;
-}
-
-.close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
+td.instruct {
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .font-7 {
     font-size: .7em;
+}
+
+.tooltip {
+    position: relative;
+    display: inline;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent #555 transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
 }

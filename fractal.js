@@ -14,34 +14,9 @@
 "use strict";
 
 const ASPECT_RATIO = 1.5; // aspect ratio 4:3
-const CANVAS_SIZE = 0.8; // image size relative to document
+const CANVAS_INSET = 0.8; // image inset relative to document
 
 function start() {
-    // Get the help modal
-    var modal = document.getElementById("helpModal");
-
-    // Get the button that opens the modal
-    var btnHelp = document.getElementById("btnHelp");
-
-    // Get the <span> element that closes the modal.
-    var span = document.getElementsByClassName("close")[0];
-
-    // When the user clicks the button, open the modal.
-    btnHelp.onclick = function () {
-        modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal.
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it.
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
 
     // Start the interactive fractal window.
     fractalStart()
@@ -79,7 +54,7 @@ function fractalStart() {
     ];
     const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
         "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
-        "btnExponent", "btnPlot", "btnSettings", "btnSave"];
+        "btnExponent", "btnPlot", "btnSettings", "btnSave", "btnHelp"];
 
     // Create and size canvas relative to window size.
     var canvasdiv = document.getElementById("canvas");
@@ -136,7 +111,7 @@ function fractalStart() {
         // Reset initial settings
         reset();
         // Generate image
-        generateImage();
+        generateImage(imagew, imageh);
         // Enter main loop
         main(0);
     }
@@ -167,14 +142,14 @@ function fractalStart() {
         var w = window.innerWidth;
         var h = window.innerHeight;
         if (w >= h) {
-            height = Math.floor(h * CANVAS_SIZE);
+            height = Math.floor(h * CANVAS_INSET);
             width = Math.floor(height * ASPECT_RATIO);
         }
         else {
-            width = Math.floor(w * CANVAS_SIZE);
+            width = Math.floor(w * CANVAS_INSET);
             height = Math.floor(width / ASPECT_RATIO);
         }
-        return { width, height }
+        return { width, height };
     }
 
     // Reset to default settings.
@@ -199,21 +174,21 @@ function fractalStart() {
     }
 
     // Generate the fractal image.
-    function generateImage() {
+    function generateImage(width, height) {
         duration = Date.now();
         var x, y, ppos, scalars, color;
         // Calculate number of iterations based on zoom level
         maxiter = autoiter ? getAutoiter(zoom, setmode) : maxiter;
-        for (x = 0; x < imagew; x += 1) {
-            for (y = 0; y < imageh; y += 1) {
+        for (x = 0; x < width; x += 1) {
+            for (y = 0; y < height; y += 1) {
                 // Convert pixel coordinate to complex plane coordinate
-                ppos = ptoc(imagew, imageh, x, y, zoffpos, zoom);
+                ppos = ptoc(width, height, x, y, zoffpos, zoom);
                 // Calculate fractal escape scalars
                 scalars = fractal(ppos, cpos, exponent, maxiter, radius);
                 // Pass escape scalars to pixel coloring algorithm
                 color = getColor(scalars, maxiter, theme, shift);
                 // Plot pixel in imagemap
-                plot(x, y, color, imagew);
+                plot(x, y, color, width);
             }
         }
         duration = Date.now() - duration;
@@ -469,23 +444,22 @@ function fractalStart() {
 
     // Mouse down handler.
     function onMouseDown(e) {
-        var xm, ym;
-        var regen = true;
-        zooming = false;
         var mpos = getMousePos(canvas, e);
-        xm = mpos.x;
-        ym = mpos.y;
+        var xm = mpos.x;
+        var ym = mpos.y;
+        var regen = true;
         pinit = ptoc(imagew, imageh, xm, ym, zoffpos, zoom);
         inProgress(true);
+        zooming = false;
 
         if (e.altKey) { // toggle between Julia and Mandelbrot
             if (setmode === MANDELBROT) {
                 setmode = JULIA;
                 cpos = pinit;
-                //zoffpos.set(0, 0);
+                zoffpos.set(0, 0);
             } else {
                 setmode = MANDELBROT;
-                //zoffpos.set(-0.5, 0);
+                zoffpos.set(-0.5, 0);
             }
         }
         else if (e.shiftKey) { // Centre image at mouse position
@@ -506,7 +480,7 @@ function fractalStart() {
 
         if (regen) {
             // Generate a new image
-            generateImage();
+            generateImage(imagew, imageh);
 
             // Update information panel
             updateInfo();
@@ -545,7 +519,7 @@ function fractalStart() {
             zoom *= zoomf;
 
             // Generate a new image
-            generateImage();
+            generateImage(imagew, imageh);
 
             // Update information panel
             updateInfo();
@@ -625,7 +599,7 @@ function fractalStart() {
                     btn.style.backgroundColor = "white";
                 }
                 break;
-            case "btnSettings": {
+            case "btnSettings": { // show settings panel
                 settings.style.display = settings.style.display === "block" ? "none" : "block";
                 if (settings.style.display === "block") {
                     btn.style.backgroundColor = "lightblue";
@@ -634,8 +608,17 @@ function fractalStart() {
                 }
                 break;
             }
-            case "btnPlot": // plot using manually entered parameters
-                doPlot();
+            case "btnHelp": { // show help panel
+                help.style.display = help.style.display === "block" ? "none" : "block";
+                if (help.style.display === "block") {
+                    btn.style.backgroundColor = "lightblue";
+                } else {
+                    btn.style.backgroundColor = "white";
+                }
+                break;
+            }
+            case "btnPlot": // plot using manually entered settings
+                doValidateSettings();
                 break;
             case "btnSave": {
                 doSave();
@@ -644,8 +627,9 @@ function fractalStart() {
         }
 
 
+
         // Generate a new image
-        generateImage();
+        generateImage(imagew, imageh);
 
         // Update information panel
         updateInfo();
@@ -653,7 +637,7 @@ function fractalStart() {
     }
 
     // Plot image using manual settings.
-    function doPlot() {
+    function doValidateSettings() {
         var inpre = parseFloat(document.getElementById("pre").value);
         var inpim = parseFloat(document.getElementById("pim").value);
         var incre = parseFloat(document.getElementById("cre").value);
@@ -703,10 +687,9 @@ function fractalStart() {
 
     // Save image as png file.
     function doSave() {
-  
         var image = canvas.toDataURL(); // get canvas data
         var tmpLink = document.createElement('a'); // create temporary link
-        tmpLink.download = 'image.png'; // set the name of the download file
+        tmpLink.download = "image-" + Date.now() + ".png"; // set the name of the download file
         tmpLink.href = image;
         document.body.appendChild(tmpLink); // temporarily add link to body and initiate the download
         tmpLink.click();
@@ -805,7 +788,7 @@ function fractalStart() {
                 zoom *= zoominc;
             }
             else { zoomanimate = false }
-            generateImage();
+            generateImage(imagew, imageh);
         }
     }
 
@@ -814,7 +797,7 @@ function fractalStart() {
     function doSpinning() {
         if (spinning && setmode === JULIA) {
             cpos = cpos.rotate(spininc / 100);
-            generateImage();
+            generateImage(imagew, imageh);
         }
     }
 
