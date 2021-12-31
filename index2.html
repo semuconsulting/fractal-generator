@@ -11,14 +11,13 @@
 
 <body>
   <div class="main-container">
-    <header class="text-center">
-      <!--<h1>Fractal Generator</h1>-->
-    </header>
+    <!-- <header class="text-center">
+      <h1>Fractal Generator</h1>
+    </header> -->
     <div class="canvas" id="canvas">
-      <!--fractal image canvas goes here-->
+      <!-- fractal image canvas goes here -->
     </div> <!-- /.canvas -->
-    <div class="notes text-center" id="notes">
-      <p></p>
+    <div id="buttons" class="buttons text-center font-8">
       <div class="tooltip">
         <img class="button" id="btnReset" src="./resources/btnReset.png" />
         <span class="tooltiptext">Reset settings</span>
@@ -72,25 +71,26 @@
         <span class="tooltiptext">Julia Set spin animation</span>
       </div>
       <div class="tooltip">
-        <img class="button" id="btnSettings" src="./resources/btnSettings.png" />
-        <span class="tooltiptext">Display settings</span>
-      </div>
-      <div class="tooltip">
         <img class="button" id="btnSave" src="./resources/btnSave.png" />
         <span class="tooltiptext">Save image</span>
+      </div>
+      <div class="tooltip">
+        <img class="button" id="btnSettings" src="./resources/btnSettings.png" />
+        <span class="tooltiptext">Display settings</span>
       </div>
       <div class="tooltip">
         <img class="button" id="btnHelp" src="./resources/btnHelp.png" />
         <span class="tooltiptext">Display help</span>
       </div>
-      <p></p>
+    </div> <!-- /.buttons -->
+    <div id="status" class="status text-center font-8">
       <span id="ppos"></span><span id="cpos"></span>
       <span id="zoom"></span><span id="exponent"></span><br>
       <span id="setmode"></span><span id="setvar"></span>
       <span id="theme"></span><span id="duration"></span>
       <span id="size"></span>
-    </div> <!-- /.notes -->
-    <div class="settings" id="settings">
+    </div> <!-- /.status -->
+    <div id="settings" class="settings font-8 electron">
       <h3>Settings</h3>
       <table>
         <tr>
@@ -98,14 +98,12 @@
           <td><input type="text" id="pre" name="pre"></td>
           <td><label class="wid2" for="pim">im:</label></td>
           <td><input type="text" id="pim" name="pim"> i</td>
-          <td rowspan=3 colspan=2 class="settingsbtn"><button id="btnPlot">UPDATE</button></td>
         </tr>
         <tr>
           <td><label class="wid2" for="cre">c re:</label></td>
           <td><input type="text" id="cre" name="cre"></td>
           <td><label class="wid2" for="cim">im:</label></td>
           <td><input type="text" id="cim" name="cim"> i</td>
-          <td></td>
         </tr>
         <tr>
           <td><label class="wid2" for="zoffre">z offset re:</label></td>
@@ -114,13 +112,10 @@
           <td><input type="text" id="zoffim" name="zoffim"> i</td>
         </tr>
         <tr>
-          <td><label class="wid2" for="expset">Exponent:</label></td>
-          <td><input type="text" id="expset" name="expset"></td>
           <td><label class="wid2" for="maxiset">Max Iter:</label></td>
           <td><input type="text" id="maxiset" name="maxiset"></td>
-          <td><label class="wid2" for="autoiteriset">Auto Iter:</label>
-            <input type="checkbox" id="autoiter" name="autoiter" value="1">
-          </td>
+          <td><label class="wid2" for="autoiter">Auto Iter:</label></td>
+          <td><input type="checkbox" id="autoiter" name="autoiter" value="1"></td>
         </tr>
         <tr>
           <td><label class="wid2" for="zoomset">Zoom:</label></td>
@@ -143,6 +138,10 @@
             </select></td>
         </tr>
         <tr>
+          <td><label class="wid2" for="expset">Exponent:</label></td>
+          <td><input type="text" id="expset" name="expset"></td>
+        </tr>
+        <tr>
           <td><label class="wid2" for="themeset">Color Theme:</label></td>
           <td><select id="themeset" name="themeset"></select></td>
           <td><label class="wid2" for="shiftset">Shift:</label></td>
@@ -152,27 +151,32 @@
           <td><label class="wid2" for="swapaxes">Swap X/Y:</label></td>
           <td><input type="checkbox" id="swapaxes" name="swapaxes"></td>
         </tr>
+        <tr>
+          <td colspan=3></td>
+          <td><button id="btnApply">APPLY</button></td>
+        </tr>
       </table>
     </div> <!-- ./settings -->
-    <div id="help" class="help">
+    <div id="help" class="help font-8 electron">
       <h3>How to use Fractal Generator</h3>
       <table>
         <tr>
-          <td class="instruct" colspan=2>Click anywhere in the image to zoom in at that coordinates.</td>
+          <td class="instruct" colspan=2>Click anywhere in the image to zoom in current cursor position by the zoom
+            increment amount.</td>
         </tr>
         <tr>
-          <td class="instruct" colspan=2>Click and drag to zoom into drawn area.</td>
+          <td class="instruct" colspan=2>Click, drag and release to zoom into drawn area.</td>
         </tr>
         <tr>
-          <td class="instruct" colspan=2>Ctrl + Click to zoom out by fixed factor.</td>
+          <td class="instruct" colspan=2>Ctrl + Click to zoom out at current cursor position by zoom increment amount.
+          </td>
         </tr>
         <tr>
-          <td class="instruct" colspan=2>Shift + Click to centre at current coordinates.</td>
+          <td class="instruct" colspan=2>Shift + Click to centre at current cursor position.</td>
         </tr>
         <tr>
           <td class="instruct" colspan=2>Alt(Option) + Click to toggle between Mandelbrot and Julia modes at current
-            coordinates (useful
-            points of interest can be found just outside the perimeter of the Mandelbrot set).</td>
+            coordinates (useful points of interest can be found just outside the perimeter of the Mandelbrot set).</td>
         </tr>
         <tr>
           <td><img class="icon" src="./resources/btnReset.png" /></td>
@@ -227,12 +231,12 @@
           <td>Turn Julia spin animation on/off.</td>
         </tr>
         <tr>
-          <td><img class="icon" src="./resources/btnSettings.png" /></td>
-          <td>Open/close settings panel.</td>
-        </tr>
-        <tr>
           <td><img class="icon" src="./resources/btnSave.png" /></td>
           <td>Save current image.</td>
+        </tr>
+        <tr>
+          <td><img class="icon" src="./resources/btnSettings.png" /></td>
+          <td>Open/close settings panel.</td>
         </tr>
         <tr>
           <td><img class="icon" src="./resources/btnHelp.png" /></td>
@@ -243,9 +247,8 @@
         © Algol Variables 2021. Information and source code on
         <a href="https://github.com/Algol-Variables/fractal-generator">GitHub.</a>
       </p>
-    </div>
-    <!--/.help-->
-  </div> <!-- /.main-container-->
+    </div> <!-- /.help -->
+  </div> <!-- /.main-container -->
   <!-- You can also require other files to run in this process -->
   <script src="./colormaps.js"></script>
   <script src="./complexlite.js"></script>

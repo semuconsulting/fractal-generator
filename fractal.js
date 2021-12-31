@@ -16,13 +16,8 @@
 const ASPECT_RATIO = 1.5; // aspect ratio 4:3
 const CANVAS_INSET = 0.8; // image inset relative to document
 
+// Main interactive fractal routine
 function start() {
-
-    // Start the interactive fractal window.
-    fractalStart()
-}
-
-function fractalStart() {
 
     const MANDELBROT = 0;
     const JULIA = 1;
@@ -54,7 +49,7 @@ function fractalStart() {
     ];
     const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
         "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
-        "btnExponent", "btnPlot", "btnSettings", "btnSave", "btnHelp"];
+        "btnExponent", "btnApply", "btnSettings", "btnSave", "btnHelp"];
 
     // Create and size canvas relative to window size.
     var canvasdiv = document.getElementById("canvas");
@@ -617,7 +612,7 @@ function fractalStart() {
                 }
                 break;
             }
-            case "btnPlot": // plot using manually entered settings
+            case "btnApply": // apply manual settings
                 doValidateSettings();
                 break;
             case "btnSave": {
@@ -625,8 +620,6 @@ function fractalStart() {
                 break;
             }
         }
-
-
 
         // Generate a new image
         generateImage(imagew, imageh);

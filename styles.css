@@ -15,6 +15,7 @@ body {
 div {
     width: 100%;
     margin: 0 auto;
+    background-color: white;
 }
 
 div.main-container {
@@ -29,22 +30,22 @@ div.main-container {
 }
 
 div.web {
-    padding-bottom: 40px;
+    width: 70%;
 }
 
-div.notes {
-    background-color: white;
-    width: 90%;
-    font-size: .8em;
+div.electron {
+    width: 700px;
+}
+
+div.status, div.buttons {
+    width: 700px;
     color: grey;
+    margin-top: 2px;
 }
 
 div.settings, div.help {
-    background-color: white;
     padding: 10px;
-    width: 700px;
     display: none;
-    font-size: 0.8em;
     color: grey;
     border: 1px solid grey;
     border-radius: 8px;
@@ -54,12 +55,10 @@ div.settings, div.help {
 
 header {
     margin: 0 auto;
-    font-size: .8em;
 }
 
 footer {
     margin: 0 auto;
-    font-size: .8em;
     color: grey;
     text-align: center;
     padding-top: 8px;
@@ -129,7 +128,7 @@ button:hover {
     background-color: darkgrey;
 }
 
-button#btnPlot {
+button#btnApply {
     width: 80px;
 }
 
@@ -146,13 +145,6 @@ img.button:hover {
     cursor: pointer;
 }
 
-td.settingsbtn {
-    align-content: center;
-    font-size: .8em;
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
 td.instruct {
     padding-top: 5px;
     padding-bottom: 5px;
@@ -160,6 +152,16 @@ td.instruct {
 
 .font-7 {
     font-size: .7em;
+}
+
+.font-8 {
+    font-size: .8em;
+}
+
+span.settingsbtn {
+    align-content: center;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .tooltip {
