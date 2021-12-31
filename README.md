@@ -12,13 +12,13 @@ Fractal can be configured via a set of 'quick-set' buttons, or more comprehensiv
 
 ## How to Use
 
-The instructions can be viewed by clicking on the `?` button:
+The instructions can be viewed by clicking on the ![btnHelp](/resources/btnHelp.png) button:
 
-- Click anywhere in the image to zoom in at that coordinates.
-- Click and drag to zoom into drawn area.
-- Ctrl + Click to zoom out by fixed factor.
-- Shift + Click to centre at current coordinates.
-- Alt(Option) + Click to toggle between Mandelbrot and Julia modes at current coordinates (useful points of interest can be found just outside the perimeter of the Mandelbrot set).
+- Click anywhere in the image to zoom in current cursor position by the zoom increment amount..
+- Click, drag and release to zoom into drawn area.
+- Ctrl + Click to zoom out at current cursor position by zoom increment amount.
+- Shift + Click to centre at current cursor position.
+- Alt(Option) + Click to toggle between Mandelbrot and Julia modes at current cursor position (useful points of interest can be found just outside the perimeter of the Mandelbrot set).
 - Press ![btnreset](/resources/btnReset.png) to reset to default settings.
 - Press ![btnZoomIn](/resources/btnZoomIn.png)'I' to zoom in.
 - Press ![btnZoomOut](/resources/btnZoomOut.png) to zoom out.
@@ -30,6 +30,7 @@ The instructions can be viewed by clicking on the `?` button:
 - Press ![btnColorUp](/resources/btnColorUp.png)/![btnColorDown](/resources/btnColorDown.png) to shift color theme up or down.
 - Press ![btnJuliaUp](/resources/btnJuliaUp.png)/![btnJuliaDown](/resources/btnJuliaDown.png) to rotate Julia Set clockwise or anti-clockwise.
 - Press ![btnJuliaSpin](/resources/btnJuliaSpin.png) to turn Julia spin animation on or off.
+- Press ![btnSave](/resources/btnSave.png) to save image.
 - Press ![btnSettings](/resources/btnSettings.png) to open or close settings panel.
 - Press ![btnHelp](/resources/btnHelp.png) to open or close help panel.
 
