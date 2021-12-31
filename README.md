@@ -20,8 +20,8 @@ The instructions can be viewed by clicking on the ![btnHelp](/resources/btnHelp.
 - Shift + Click to centre at current cursor position.
 - Alt(Option) + Click to toggle between Mandelbrot and Julia modes at current cursor position (useful points of interest can be found just outside the perimeter of the Mandelbrot set).
 - Press ![btnreset](/resources/btnReset.png) to reset to default settings.
-- Press ![btnZoomIn](/resources/btnZoomIn.png)'I' to zoom in.
-- Press ![btnZoomOut](/resources/btnZoomOut.png) to zoom out.
+- Press ![btnZoomIn](/resources/btnZoomIn.png) to zoom in at current coordinates.
+- Press ![btnZoomOut](/resources/btnZoomOut.png) to zoom out at current coordinates.
 - Press ![btnZoomAnimate](/resources/btnZoomAnimate.png) to turn zoom animation on or off. A series of frames will be automatically generated, centered at the current coordinates with the zoom level incremented by the 'zoom increment' amount.
 - Press ![btnMode](/resources/btnMode.png) to cycle through modes (Mandelbrot / Julia).
 - Press ![btnVariant](/resources/btnVariant.png) to cycle through variants (Standard / Burning Ship / Tricorn).  
