@@ -722,13 +722,13 @@ function start() {
             elementSet("variantset", setvar);
             elementSet("expset", exponent);
             elementSet("maxiset", maxiter);
-            checkboxSet("autoiter", autoiter);
+            elementSet("autoiter", autoiter);
             elementSet("zoomset", zoom);
             elementSet("zoomincset", zoominc);
             elementSet("spinincset", spininc);
             elementSet("themeset", theme);
             elementSet("shiftset", shift);
-            checkboxSet("swapaxes", swapaxes);
+            elementSet("swapaxes", swapaxes);
         }
     }
 
@@ -755,15 +755,14 @@ function start() {
                 sel.selectedIndex = value;
                 break;
             default: // input element
-                sel.value = value;
+                if (sel.type === "checkbox") {
+                    sel.checked = value;
+                }
+                else {
+                    sel.value = value;
+                }
                 break;
         }
-    }
-
-    // Helper function to set checkbox value.
-    function checkboxSet(id, value) {
-        var ckb = document.getElementById(id);
-        ckb.checked = value;
     }
 
     // Draw zoom area rectangle.
