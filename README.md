@@ -82,4 +82,4 @@ Icons from [iconmonstr](https://iconmonstr.com/) - [License](https://iconmonstr.
 
 ## Author Information
 
-algol variables
+admin@algolvariables.com

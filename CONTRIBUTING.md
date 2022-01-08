@@ -1,6 +1,6 @@
 # Fractal Generator - How to contribute
 
-**fractal-generator** is an open source volunteer project and we appreciate any contribution, from fixing a grammar mistake in a comment to extending device test coverage or implementing new functionality. Please read this section if you are contributing your work.
+**fractal-generator** is an open source volunteer project and we appreciate any contribution, from fixing a grammar mistake in a comment to implementing new functionality. Please read this section if you are contributing your work.
 
 Being one of our contributors, you agree and confirm that:
 
@@ -28,4 +28,4 @@ Always write a clear log message for your commits. One-line messages are fine fo
 
 Thanks,
 
-semudev2
+admin
