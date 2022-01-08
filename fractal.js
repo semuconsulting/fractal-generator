@@ -73,16 +73,16 @@ function start() {
     var zoom;
     var maxiter;
     var exponent = 2;
-    var radius = 1 << 16; // Bailout radius
+    var radius = 1 << 8; // Bailout radius
     var autoiter = true; // Set to false to retain fixed value for maxiter
     var theme; // Color theme
     var shift; // Color theme shift 0-100
     var zoomarea = { x: 0, y: 0, w: 1, h: 1 } // Zooming area
-    var zooming = false;
+    var zoomdraw = false;
     var zoominc = 1.5; // zoom in/out increment
     var duration = 0;
     var spinning = false;
-    var zoomanimate = false;
+    var zooming = false;
     var spininc = 1; // Julia rotate/spin increment in degrees
     var swapaxes = false;
 
@@ -121,18 +121,19 @@ function start() {
         // Draw the generated image
         ctx.putImageData(imagedata, 0, 0);
 
-        // Draw zooming area if zooming
+        // Draw zooming area during mouse drag operation
+        doZoomDraw();
+
+        // If in Zooming animation mode
         doZooming();
 
-        // Zoom in if in animated zoom mode
-        doZoomAnimate();
-
-        // If in Spinning Julia mode
+        // If in Spinning Julia animation mode
         doSpinning();
 
     }
 
-    // Get size of canvas.
+    // Get size of canvas relative to document window, while maintaining constant aspect ratio.
+    // NB: does not automaticallty resize on window resize - document would have to be reloaded.
     function getSize() {
         var width, height;
         var w = window.innerWidth;
@@ -155,7 +156,7 @@ function start() {
         zoom = 0.75;
         maxiter = MINITERM;
         zoominc = 1.5;
-        radius = 1 << 16;
+        radius = 1 << 8;
         exponent = 2;
         theme = 0;
         shift = 0;
@@ -163,7 +164,7 @@ function start() {
         setvar = 0;
         autoiter = true;
         spinning = false;
-        zoomanimate = false;
+        zooming = false;
         spininc = 1;
         swapaxes = false;
         updateInfo();
@@ -173,6 +174,7 @@ function start() {
     function generateImage(width, height) {
         duration = Date.now();
         var x, y, ppos, scalars, color;
+        var radius2 = radius ** 2; // Square here to save a step inside the iteration 
         // Calculate number of iterations based on zoom level
         maxiter = autoiter ? getAutoiter(zoom, setmode) : maxiter;
         for (x = 0; x < width; x += 1) {
@@ -180,7 +182,7 @@ function start() {
                 // Convert pixel coordinate to complex plane coordinate
                 ppos = ptoc(width, height, x, y, zoffpos, zoom);
                 // Calculate fractal escape scalars
-                scalars = fractal(ppos, cpos, exponent, maxiter, radius);
+                scalars = fractal(ppos, cpos, exponent, maxiter, radius2);
                 // Pass escape scalars to pixel coloring algorithm
                 color = getColor(scalars, maxiter, theme, shift);
                 // Plot pixel in imagemap
@@ -242,7 +244,7 @@ function start() {
                 zim = -zim; // conjugate z
             }
 
-            // do squaring now saves a couple of calculations later
+            // doing squaring now saves a couple of calculations later
             zre2 = zre * zre;
             zim2 = zim * zim;
             za = zre2 + zim2 // abs(z)²
@@ -250,10 +252,9 @@ function start() {
                 break;
             }
 
-            // z = z² + c
-            if (n == 2) {
+            if (n == 2) { // z = z² + c
                 tre = zre2 - zim2 + cre;
-                zim = 2 * zre * zim + cim; // *2
+                zim = 2 * zre * zim + cim;
                 zre = tre;
             }
             else { // z = zⁿ + c, where n is integer > 2
@@ -291,7 +292,7 @@ function start() {
             if (n & 1) { // if n is odd
                 res *= base;
             }
-            n >>= 1; // n / 2
+            n >>= 1; // n/2
             base *= base;
         }
         return res;
@@ -378,8 +379,8 @@ function start() {
     // to produces smoother color gradients.
     // scalars := {i, za}
     function normalize(scalars) {
-        var lzn = Math.log(scalars.za) << 1; // * 2
-        var nu = Math.log(lzn / Math.log(radius)) / Math.log(exponent)
+        var lzn = Math.log(scalars.za) * 2;
+        var nu = Math.log(lzn / Math.log(radius)) / Math.log(exponent);
         return scalars.i + 1 - nu;
     }
 
@@ -434,8 +435,8 @@ function start() {
 
     // Arbitrary algorithm to derive 'optimal' max iterations for a given
     // zoom level, enhancing legibility at higher magnifications.
-    // Equates to around 1000 iterations at the maximum practical zoom level
-    // of 1e14.
+    // Can be overridden by setting autoiter to False - often worth experimenting
+    // for best cosmetic results.
     function getAutoiter(zoom, setmode) {
         var miniter = setmode === JULIA ? MINITERJ : MINITERM;
         return Math.max(miniter, parseInt(Math.abs(500 * Math.log(1 / Math.sqrt(zoom)))));
@@ -473,7 +474,7 @@ function start() {
             zoomarea.y = mpos.y;
             zoomarea.w = 0;
             zoomarea.h = 0;
-            zooming = true;
+            zoomdraw = true;
             regen = false;
         }
 
@@ -496,7 +497,7 @@ function start() {
 
     // Mouse up handler.
     function onMouseUp(e) {
-        if (zooming) {
+        if (zoomdraw) {
             // Zoom in based on drawn zoom area
             // Image aspect ratio is fixed by canvas size, so drawn zoom area
             // is purely used to derive zoom factor and does not necessarily
@@ -523,7 +524,7 @@ function start() {
             // Update information panel
             updateInfo();
         }
-        zooming = false;
+        zoomdraw = false;
     }
 
     // Get the mouse position.
@@ -547,8 +548,8 @@ function start() {
                 zoom *= zoominc;
                 break;
             case "btnZoomAnimate": // zoom animation
-                zoomanimate = !zoomanimate;
-                if (zoomanimate) {
+                zooming = !zooming;
+                if (zooming) {
                     btn.style.backgroundColor = "darkseagreen";
                 } else {
                     btn.style.backgroundColor = "white";
@@ -765,9 +766,9 @@ function start() {
         ckb.checked = value;
     }
 
-    // Draw selection rectangle.
-    function doZooming() {
-        if (zooming) {
+    // Draw zoom area rectangle.
+    function doZoomDraw() {
+        if (zoomdraw) {
             ctx.beginPath();
             ctx.lineWidth = "2";
             ctx.strokeStyle = "yellow";
@@ -779,12 +780,13 @@ function start() {
     // Animate zooming in.
     // zoominc determines the speed of zooming.
     // Zoom limited to 1e15 due to pixelation.
-    function doZoomAnimate() {
-        if (zoomanimate) {
+    // CHALLENGE: Can you improve the maximum zoom level?
+    function doZooming() {
+        if (zooming) {
             if (zoom < 1e15) {
                 zoom *= zoominc;
             }
-            else { zoomanimate = false }
+            else { zooming = false }
             generateImage(imagew, imageh);
         }
     }
