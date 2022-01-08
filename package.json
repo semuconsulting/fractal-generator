@@ -15,7 +15,7 @@
     "Mandelbrot",
     "Julia"
   ],
-  "author": "semuadmin",
+  "author": "semudev2",
   "license": "BSD 3-Clause",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.61",
