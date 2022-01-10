@@ -2,7 +2,7 @@
 // A basic complex number library which implements the methods used for
 // Mandelbrot and Julia Set generation.
 //
-// Copyright (c) 2021 semuadmin
+// Copyright (c) 2021 Algol Variables
 //
 // BSD 3-Clause License
 // ------------------------------------------------------------------------

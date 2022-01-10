@@ -40,6 +40,7 @@ function start() {
         "Blue/Brown Cyclic 16",
         "Tropical Cyclic 256",
         "CET4s Cyclic 256",
+        "Rainbow Cyclic 256",
         "Basic Hue",
         "Normalized Hue",
         "Sqrt Maxiter Hue",
@@ -263,7 +264,7 @@ function start() {
                 zim = r * Math.sin(θ) + cim;
             }
 
-            // Optimisation - periodicity check speeds
+            // Periodicity check optimisation - speeds
             // up processing of points within set
             if (zre === lastre && zim === lastim) {
                 i = maxiter;
@@ -275,7 +276,7 @@ function start() {
                 lastre = zre;
                 lastim = zim;
             }
-            // ... end of optimisation
+            // ... end of periodicity check
 
         }
         return { i, za };
@@ -312,28 +313,31 @@ function start() {
             case 2: // Cet4s 256-level cyclic colormap
                 color = getColormap(scalars, COLORMAP_CET4S, shift);
                 break;
-            case 3: // Basic hue
+            case 3: // Rainbow HSV 256-level cyclic colormap
+                color = getColormap(scalars, COLORMAP_HSV256, shift);
+                break;
+            case 4: // Basic hue
                 h = ((i / maxiter) + (shift / 100)) % 1;
                 color = hsv2rgb(h, 0.75, 1);
                 break;
-            case 4: // Normalized hue (smoother color gradation than basic)
+            case 5: // Normalized hue (smoother color gradation than basic)
                 h = ((normalize(scalars) / maxiter) + (shift / 100)) % 1;
                 color = hsv2rgb(h, 0.75, 1);
                 break;
-            case 5: // Sqrt hue
+            case 6: // Sqrt hue
                 h = ((normalize(scalars) / Math.sqrt(maxiter)) + (shift / 100)) % 1;
                 color = hsv2rgb(h, 0.75, 1);
                 break;
-            case 6: // Sin sqrt hue
+            case 7: // Sin sqrt hue
                 steps = 1 + shift / 100;
                 h = 1 - (Math.sin((normalize(scalars) / Math.sqrt(maxiter) * steps) + 1) / 2);
                 color = hsv2rgb(h, 0.75, 1);
                 break;
-            case 7: // Banded rgb
+            case 8: // Banded rgb
                 bands = [0, 32, 96, 192]; // Arbitrary - amend as desired
                 color = { r: bands[(i / 4) % 4], g: bands[i % 4], b: bands[(i / 16) % 4] };
                 break;
-            case 8: // Grayscale
+            case 9: // Grayscale
                 h = ((256 * i / maxiter) + shift) % 255;
                 color = { r: h, g: h, b: h };
                 break;
@@ -718,13 +722,13 @@ function start() {
             elementSet("variantset", setvar);
             elementSet("expset", exponent);
             elementSet("maxiset", maxiter);
-            checkboxSet("autoiter", autoiter);
+            elementSet("autoiter", autoiter);
             elementSet("zoomset", zoom);
             elementSet("zoomincset", zoominc);
             elementSet("spinincset", spininc);
             elementSet("themeset", theme);
             elementSet("shiftset", shift);
-            checkboxSet("swapaxes", swapaxes);
+            elementSet("swapaxes", swapaxes);
         }
     }
 
@@ -751,15 +755,14 @@ function start() {
                 sel.selectedIndex = value;
                 break;
             default: // input element
-                sel.value = value;
+                if (sel.type === "checkbox") {
+                    sel.checked = value;
+                }
+                else {
+                    sel.value = value;
+                }
                 break;
         }
-    }
-
-    // Helper function to set checkbox value.
-    function checkboxSet(id, value) {
-        var ckb = document.getElementById(id);
-        ckb.checked = value;
     }
 
     // Draw zoom area rectangle.
