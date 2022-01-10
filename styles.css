@@ -138,6 +138,11 @@ img.icon {
     padding-right: 5px;
 }
 
+img.icon_small {
+    width: 10px;
+    height: 10px;
+}
+
 img.button {
     padding: 5px;
 }
