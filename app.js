@@ -198,12 +198,12 @@ function start() {
     // @param {number} maxiter - maximum iterations before bailout
     // @param {number} theme - color theme 
     // @param {number} shift - shift colormap along gradient
-    // @return {ColorRGB} - RGB color object
+    // @return {object} - RGB color object
     //
     function getColor(scalars, maxiter, theme, shift) {
 
-        if (scalars.i == maxiter&& theme != 9) {
-            return new ColorRGB(0, 0, 0, 255); // Black
+        if (scalars.i == maxiter && theme != 9) {
+            return { r: 0, g: 0, b: 0, a: 255 }; // Black
         }
         var color, h, steps;
         var ni = normalize(scalars, radius, exponent); // normalised iteration count
@@ -218,7 +218,7 @@ function start() {
                 color = getColormap(ni, COLORMAP_HSV256, shift, interp);
                 break;
             case 4: // Basic hue
-                h = ((i / maxiter) + (shift / 100)) % 1;
+                h = ((scalars.i / maxiter) + (shift / 100)) % 1;
                 color = hsv2rgb(h, 0.75, 1);
                 break;
             case 5: // Normalized hue (smoother color gradation than basic)
@@ -236,7 +236,7 @@ function start() {
                 break;
             case 8: // Grayscale
                 h = Math.floor((256 * ni / maxiter) + shift) % 256;
-                color = new ColorRGB(h, h, h);
+                color = { r: h, g: h, b: h, a: 255 };
                 break;
             case 9: // 2-Color
                 h = shift / 100;

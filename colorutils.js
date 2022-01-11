@@ -2,54 +2,26 @@
 // Defines ColorRGB object, color manipulation functions and
 // cyclic colormaps for fractal generator.
 //
+// Does not use an RGB color class as instantiating new class instances
+// represents a significant overhead in the iterative fractal computation.
+//
 // Copyright (c) 2021 Algol Variables
 // ------------------------------------------------------------------------
 "use strict";
 
-// Instantiate RGB Color object.
-//
-// @param {number} r - red value
-// @param {number} g - green value
-// @param {number} b - blue value
-// @return {number} a - alpha (transparency) value
-//
-function ColorRGB(r, g, b, a = 255) {
-    this.r = r % 256;
-    this.g = g % 256;
-    this.b = b % 256;
-    this.a = a % 256;
-}
-
-ColorRGB.prototype = {
-
-    // Set value.
-    //
-    // @param {number} r - red value
-    // @param {number} g - green value
-    // @param {number} b - blue value
-    // @return {number} a - alpha (transparency) value
-    //
-    'set': function (r, g, b, a) {
-        this.r = r % 256;
-        this.g = g % 256;
-        this.b = b % 256;
-        this.a = a % 256;
-    },
-}
-
 // Linear interpolation between two RGB colors {r, g, b, a}.
 //
-// @param {ColorRGB} col1 - first color
-// @param {ColorRGB} col2 - second color
+// @param {object} col1 - first color
+// @param {object} col2 - second color
 // @param {number} ni - normalized iteration count
-// @return {ColorRGB} - interpolated color
+// @return {object} - interpolated color
 //
 function interpolate(col1, col2, ni) {
     var f = ni % 1; // fractional part of ni
     var r = (col2.r - col1.r) * f + col1.r;
     var g = (col2.g - col1.g) * f + col1.g;
     var b = (col2.b - col1.b) * f + col1.b;
-    return new ColorRGB(r, g, b, 255);
+    return { r: r, g: g, b: b, a: 255 };
 }
 
 // Convert HSV values (in range 0-1) to RGB (in range 0-255).
@@ -57,13 +29,13 @@ function interpolate(col1, col2, ni) {
 // @param {number} h - hue as decimal
 // @param {number} s - saturation as decimal
 // @param {number} v - value as decimal
-// @return {ColorRGB} - RGB color object
+// @return {object} - RGB color object
 //
 function hsv2rgb(h, s, v) {
 
     var i, f, p, q, t;
     var a = 255;
-    var col = new ColorRGB(v, v, v, a);
+    var col = { r: v, g: v, b: v, a: a };
     v = parseInt(v * 255);
     if (s === 0.0) {
         return col;
@@ -75,25 +47,25 @@ function hsv2rgb(h, s, v) {
     t = parseInt(v * (1.0 - s * (1.0 - f)));
     switch (i %= 6) {
         case 0:
-            col.set(v, t, p, a);
+            col = { r: v, g: t, b: p, a: a };
             break;
         case 1:
-            col.set(q, v, p, a);
+            col = { r: q, g: v, b: p, a: a };
             break;
         case 2:
-            col.set(p, v, t, a);
+            col = { r: p, g: v, b: t, a: a };
             break;
         case 3:
-            col.set(p, q, v, a);
+            col = { r: p, g: q, b: v, a: a };
             break;
         case 4:
-            col.set(t, p, v, a);
+            col = { r: t, g: p, b: v, a: a };
             break;
         case 5:
-            col.set(v, p, q, a);
+            col = { r: v, g: p, b: q, a: a };
             break;
         default:
-            col.set(v, v, v, a);
+            col = { r: v, g: v, b: v, a: a };
     }
     return col;
 }
@@ -106,17 +78,17 @@ function hsv2rgb(h, s, v) {
 // @param {boolean} interp - interpolate colours true/false
 // @param {number} radius - bailout radius
 // @param {number} exponent - integer exponent
-// @return {ColorRGB} - RGB color object
+// @return {object} - RGB color object
 //
 function getColormap(ni, colmap, shift, interp) {
 
     try {
         var sh = Math.ceil(shift * (colmap.length) / 100); // gradient shift
         var col = colmap[(Math.floor(ni) + sh) % colmap.length];
-        var col1 = new ColorRGB(col[0], col[1], col[2]);
+        var col1 = { r: col[0], g: col[1], b: col[2], a: 255 };
         if (interp) {
             col = colmap[(Math.floor(ni) + sh + 1) % colmap.length];
-            var col2 = new ColorRGB(col[0], col[1], col[2]);
+            var col2 = { r: col[0], g: col[1], b: col[2], a: 255 };
             return interpolate(col1, col2, ni);
         }
         else {
@@ -125,7 +97,7 @@ function getColormap(ni, colmap, shift, interp) {
     }
     catch (err) {
         console.log("getColormap error:", ni, sh, ni + sh, scalars.i, scalars.za);
-        return new ColorRGB(255, 255, 255);
+        return { r: 255, g: 255, b: 255, a: 255 };
     }
 }
 
