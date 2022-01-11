@@ -1,5 +1,6 @@
 // ------------------------------------------------------------------------
-// Core fractal calculation and color rendering routines.
+// Core fractal calculation and color rendering functions for 
+// fractal generator.
 //
 // Uses Complex object type from complexlite.js library.
 //
@@ -19,11 +20,20 @@ const BURNING_SHIP = 1;
 const TRICORN = 2;
 const PHOENIX = 3;
 const MINITERM = 100; // Minimum iterations for Mandelbrot
-const MINITERJ = 200; // Minimum iterations for Julia
+const MINITERJ = 600; // Minimum iterations for Julia
 
 // Converts pixel (x/y) coordinates to complex (real/imaginary) space coordinates
-// (zoffpos is always the complex offset).
-function ptoc(width, height, x, y, zoffpos, zoom, swap) {
+//
+// @param {number} width - width of canvas in pixels
+// @param {number} height - height of canvas in pixels
+// @param {number} x - x (horizontal) pixel coordinate
+// @param {number} y - y (vertical) pixel coordinate
+// @param {Complex} cOffset - offset from origin in complex space 
+// @param {number} zoom - zoom level
+// @param {boolean} swap - transpose x/y axes
+// @return {object} - scalars (i = bailout iteration, za = absolute value of z squared)
+//
+function ptoc(width, height, x, y, cOffset, zoom, swap) {
     var temp;
     if (swap) { // X/Y axes are swapped
         temp = x;
@@ -33,14 +43,24 @@ function ptoc(width, height, x, y, zoffpos, zoom, swap) {
         width = height;
         height = temp;
     }
-    var re = zoffpos.re + ((width / height) * (x - width / 2) / (zoom * width / 2));
-    var im = zoffpos.im + (-1 * (y - height / 2) / (zoom * height / 2));
+    var re = cOffset.re + ((width / height) * (x - width / 2) / (zoom * width / 2));
+    var im = cOffset.im + (-1 * (y - height / 2) / (zoom * height / 2));
     return new Complex(re, im);
 }
 
 // Calculate the escape scalars for the complex coordinates c, cj and integer 
 // exponent n. Uses basic maths for n = 2 (the most common Mandelbrot 
 // configuration) and Complex polar maths for n > 2.
+//
+// @param {Complex} c - complex space coordinate
+// @param {Complex} cOffset - complex space offset from origin
+// @param {number} n - integer exponent
+// @param {number} maxiter - maximum iterations before bailout
+// @param {number} radius - bailout radius squared 
+// @param {number} mode - 0 = Mandelbrot, 1 = Julia
+// @param {number} variant - 0 = standard, 1 = Burning Ship, 2 = Tricorn
+// @return {Complex} - complex (re/im) coordinate
+//
 function fractal(c, cj, n, maxiter, radius, mode, variant) {
 
     var i, za, zre, zim, zre2, zim2, tre, cre, cim, r, θ;
@@ -111,7 +131,13 @@ function fractal(c, cj, n, maxiter, radius, mode, variant) {
 
 // Normalize iteration count from escape scalars
 // to produces smoother color gradients.
-// scalars := {i, za}
+//
+// @param {object} scalars - scalars {i, za} returned by fractals() function
+// @param {Complex} cOffset - complex space offset from origin
+// @param {number} radius - bailout radius
+// @param {number} n - integer exponent
+// @return {number} - normalised iteration count
+//
 function normalize(scalars, radius, exponent) {
     var lzn = Math.log(scalars.za) * 2;
     var nu = Math.log(lzn / Math.log(radius)) / Math.log(exponent);
@@ -122,74 +148,12 @@ function normalize(scalars, radius, exponent) {
 // zoom level, enhancing legibility at higher magnifications.
 // Can be overridden by setting autoiter to False - often worth experimenting
 // for best cosmetic results.
+//
+// @param {number} zoom - zoom level
+// @param {number} mode - 0 = Mandelbrot, 1 = Julia
+// @return {number} - calculated maximum iteration count
+//
 function getAutoiter(zoom, mode) {
     var miniter = mode === JULIA ? MINITERJ : MINITERM;
     return Math.max(miniter, parseInt(Math.abs(500 * Math.log(1 / Math.sqrt(zoom)))));
-}
-
-// Linear interpolation between two RGB colors [r, g, b].
-function interpolate(col1, col2, ni) {
-    var f = ni % 1; // fractional part of ni
-    var r = (col2[0] - col1[0]) * f + col1[0];
-    var g = (col2[1] - col1[1]) * f + col1[1];
-    var b = (col2[2] - col1[2]) * f + col1[2];
-    return { r: r, g: g, b: b }
-}
-
-// Convert HSV values (in range 0-1) to RGB (in range 0-255).
-function hsv2rgb(h, s, v) {
-
-    var i, f, p, q, t, col;
-
-    v = parseInt(v * 255);
-    if (s === 0.0) {
-        return { r: v, g: v, b: v };
-    }
-    i = parseInt(h * 6.0);
-    f = (h * 6.0) - i;
-    p = parseInt(v * (1.0 - s));
-    q = parseInt(v * (1.0 - s * f));
-    t = parseInt(v * (1.0 - s * (1.0 - f)));
-    switch (i %= 6) {
-        case 0:
-            col = { r: v, g: t, b: p };
-            break;
-        case 1:
-            col = { r: q, g: v, b: p };
-            break;
-        case 2:
-            col = { r: p, g: v, b: t };
-            break;
-        case 3:
-            col = { r: p, g: q, b: v };
-            break;
-        case 4:
-            col = { r: t, g: p, b: v };
-            break;
-        case 5:
-            col = { r: v, g: p, b: q };
-            break;
-        default:
-            col = { r: v, g: v, b: v };
-    }
-    return col;
-}
-
-// WORK IN PROGRESS Make linearly interpolated color gradient
-// cols = list of key RGB colors e.g. [[66, 30, 15], [25, 7, 26], etc.]
-// levels = number of gradient levels e.g. 256
-function make_colormap(cols, levels) {
-
-    var i, c, col;
-    var gradient = [];
-    var n = Math.ceil(levels / (cols.length - 1));
-    var g = 0;
-    for (i = 0; i < levels; i += 1) {
-        g = (g + 1) % n;
-        c = Math.floor(i / n);
-        col = interpolate(cols[c], cols[c + 1], 1 / g);
-        gradient.push([col.r, col.g, col.b]);
-    }
-    return gradient;
-
 }

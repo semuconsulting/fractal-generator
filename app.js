@@ -35,7 +35,6 @@ function start() {
         "Normalized Hue",
         "Sqrt Maxiter Hue",
         "Sin Sqrt Maxiter Hue",
-        "Banded RGB",
         "Grayscale",
     ];
     const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
@@ -58,8 +57,8 @@ function start() {
     var setmode; // Fractal set type (Mandelbrot/Julia)
     var setvar; // Fractal set variation (Standard/BurningShip/Tricorn)
     var pinit = new Complex(0, 0); // Mouse click complex coordinate
-    var jpos = new Complex(0, 0); // Constant Complex coordinate for Julia sets
-    var zoffpos = new Complex(-0.5, 0); // Offset (pan) complex coordinate
+    var cJulia = new Complex(0, 0); // Constant Complex coordinate for Julia sets
+    var cOffset = new Complex(-0.5, 0); // Offset (pan) complex coordinate
     var zoom;
     var maxiter;
     var exponent = 2;
@@ -75,6 +74,7 @@ function start() {
     var zooming = false;
     var angle = 0; // Current Julia rotation angle
     var spininc = 1; // Julia rotate/spin increment in degrees
+    var interp = true; // interpolate colors
     var swapaxes = false;
 
     // Initialize the interactive canvas.
@@ -142,8 +142,8 @@ function start() {
 
     // Reset to default settings.
     function reset() {
-        zoffpos.set(-0.5, 0);
-        jpos.set(0, 0);
+        cOffset.set(-0.5, 0);
+        cJulia.set(0, 0);
         zoom = 0.75;
         maxiter = MINITERM;
         zoominc = 1.5;
@@ -157,24 +157,29 @@ function start() {
         spinning = false;
         zooming = false;
         spininc = 1;
+        interp = true;
         swapaxes = false;
         angle = 0;
         updateInfo();
     }
 
     // Generate the fractal image.
+    //
+    // @param {number} width - canvas width in pixels
+    // @param {number} height - canvas height in pixels
+    //
     function generateImage(width, height) {
         duration = Date.now();
-        var x, y, cpos, scalars, color;
+        var x, y, c, scalars, color;
         var radius2 = radius ** 2; // Square here to save a step inside the iteration 
         // Calculate number of iterations based on zoom level
         maxiter = autoiter ? getAutoiter(zoom, setmode) : maxiter;
         for (x = 0; x < width; x += 1) {
             for (y = 0; y < height; y += 1) {
                 // Convert pixel coordinate to complex plane coordinate
-                cpos = ptoc(width, height, x, y, zoffpos, zoom, swapaxes);
+                c = ptoc(width, height, x, y, cOffset, zoom, swapaxes);
                 // Calculate fractal escape scalars
-                scalars = fractal(cpos, jpos, exponent, maxiter, radius2, setmode, setvar);
+                scalars = fractal(c, cJulia, exponent, maxiter, radius2, setmode, setvar);
                 // Pass escape scalars to pixel coloring algorithm
                 color = getColor(scalars, maxiter, theme, shift);
                 // Plot pixel in imagemap
@@ -187,22 +192,29 @@ function start() {
     }
 
     // Get pixel color for given escape scalars and color theme.
+    //
+    // @param {object} scalars - scalars {i, za] from fractals() function
+    // @param {number} maxiter - maximum iterations before bailout
+    // @param {number} theme - color theme 
+    // @param {number} shift - shift colormap along gradient
+    // @return {ColorRGB} - RGB color object
+    //
     function getColor(scalars, maxiter, theme, shift) {
 
-        var color, h, steps, bands;
+        var color, h, steps;
         var i = scalars.i;
         if (i == maxiter) {
-            return { r: 0, g: 0, b: 0 }; // Black
+            return new ColorRGB(0, 0, 0, 255); // Black
         }
         switch (theme) {
             case 1: // Tropical 256-level cyclic colormap
-                color = getColormap(scalars, COLORMAP_TROP256, shift);
+                color = getColormap(scalars, COLORMAP_TROP256, shift, interp, radius, exponent);
                 break;
             case 2: // Cet4s 256-level cyclic colormap
-                color = getColormap(scalars, COLORMAP_CET4S, shift);
+                color = getColormap(scalars, COLORMAP_CET4S, shift, interp, radius, exponent);
                 break;
             case 3: // Rainbow HSV 256-level cyclic colormap
-                color = getColormap(scalars, COLORMAP_HSV256, shift);
+                color = getColormap(scalars, COLORMAP_HSV256, shift, interp, radius, exponent);
                 break;
             case 4: // Basic hue
                 h = ((i / maxiter) + (shift / 100)) % 1;
@@ -221,16 +233,12 @@ function start() {
                 h = 1 - (Math.sin((normalize(scalars, radius, exponent) / Math.sqrt(maxiter) * steps) + 1) / 2);
                 color = hsv2rgb(h, 0.75, 1);
                 break;
-            case 8: // Banded rgb
-                bands = [0, 32, 96, 192]; // Arbitrary - amend as desired
-                color = { r: bands[(i / 4) % 4], g: bands[i % 4], b: bands[(i / 16) % 4] };
-                break;
-            case 9: // Grayscale
+            case 8: // Grayscale
                 h = ((256 * i / maxiter) + shift) % 255;
-                color = { r: h, g: h, b: h };
+                color = new ColorRGB(h, h, h);
                 break;
             default: // Blue brown 16-level cyclic colormap
-                color = getColormap(scalars, COLORMAP_BB16, shift);
+                color = getColormap(scalars, COLORMAP_BB16, shift, interp, radius, exponent);
                 break;
         }
 
@@ -238,29 +246,19 @@ function start() {
 
     }
 
-    // Get pixel color from RGB colormap.
-    function getColormap(scalars, colmap, shift = 0) {
-
-        try {
-            var ni = normalize(scalars, radius, exponent); // normalised iteration count
-            var sh = Math.ceil(shift * (colmap.length) / 100); // palette shift
-            var col1 = colmap[(Math.floor(ni) + sh) % colmap.length];
-            var col2 = colmap[(Math.floor(ni) + sh + 1) % colmap.length];
-            return interpolate(col1, col2, ni);
-        }
-        catch (err) {
-            console.log("getColormap error:", ni, sh, ni + sh, scalars.i, scalars.za);
-            return { r: 255, g: 255, b: 255 };
-        }
-    }
-
     // Plot the pixel color in the imagedata.
+    //
+    // @param {number} x - x (horizontal) pixel coordinate
+    // @param {number} y - y (vertical) pixel coordinate
+    // @param {ColorRGB} color - RGB color object
+    // @param {number} width - width of canvas in pixels
+    //
     function plot(x, y, color, width) {
         var pixelindex = (y * width + x) << 2; // * 4
         imagedata.data[pixelindex] = color.r;
         imagedata.data[pixelindex + 1] = color.g;
         imagedata.data[pixelindex + 2] = color.b;
-        imagedata.data[pixelindex + 3] = 255;
+        imagedata.data[pixelindex + 3] = color.a;
     }
 
     // Mouse down handler.
@@ -269,25 +267,25 @@ function start() {
         var xm = mpos.x;
         var ym = mpos.y;
         var regen = true;
-        pinit = ptoc(imagew, imageh, xm, ym, zoffpos, zoom);
+        pinit = ptoc(imagew, imageh, xm, ym, cOffset, zoom);
         inProgress(true);
         zooming = false;
 
         if (e.altKey) { // toggle between Julia and Mandelbrot
             if (setmode === MANDELBROT) {
                 setmode = JULIA;
-                jpos = pinit;
-                zoffpos.set(0, 0);
+                cJulia = pinit;
+                cOffset.set(0, 0);
             } else {
                 setmode = MANDELBROT;
-                zoffpos.set(-0.5, 0);
+                cOffset.set(-0.5, 0);
             }
         }
         else if (e.shiftKey) { // Centre image at mouse position
-            zoffpos = pinit;
+            cOffset = pinit;
         }
         else if (e.ctrlKey) { // Zoom out at mouse position by zoom increment
-            zoffpos = pinit;
+            cOffset = pinit;
             zoom /= zoominc;
         }
         else { // Beginning of zoom in action
@@ -336,7 +334,7 @@ function start() {
                 zoomf = zoominc;
             }
 
-            zoffpos = ptoc(imagew, imageh, zx, zy, zoffpos, zoom)
+            cOffset = ptoc(imagew, imageh, zx, zy, cOffset, zoom)
             zoom *= zoomf;
 
             // Generate a new image
@@ -382,11 +380,11 @@ function start() {
             case "btnMode": // t = cycle through modes
                 setmode = (setmode + 1) % SETMODES.length;
                 if (setmode === MANDELBROT) {
-                    zoffpos.set(-0.5, 0);
-                    jpos.set(0, 0)
+                    cOffset.set(-0.5, 0);
+                    cJulia.set(0, 0)
                 } else {
-                    zoffpos.set(0, 0);
-                    jpos = pinit; // pinit set via prior mouse click
+                    cOffset.set(0, 0);
+                    cJulia = pinit; // pinit set via prior mouse click
                 }
                 break;
             case "btnVariant": // v = cycle through set variants
@@ -409,12 +407,12 @@ function start() {
                 break;
             case "btnJuliaDown": // left arrow = rotate Julia left
                 var a = spininc * Math.PI / 180;
-                jpos = jpos.rotate(a);
+                cJulia = cJulia.rotate(a);
                 angle = (angle + a) % (2 * Math.PI);
                 break;
             case "btnJuliaUp": // right arrow = rotate Julia right
                 var a = -spininc * Math.PI / 180;
-                jpos = jpos.rotate(a);
+                cJulia = cJulia.rotate(a);
                 angle = (angle + a) % (2 * Math.PI);
                 break;
             case "btnJuliaSpin": // toggle automated Julia spin
@@ -477,13 +475,14 @@ function start() {
         setmode = document.getElementById("modeset").selectedIndex;
         setvar = document.getElementById("variantset").selectedIndex;
         theme = document.getElementById("themeset").selectedIndex;
+        interp = document.getElementById("interpolateset").checked;
         swapaxes = document.getElementById("swapaxes").checked;
 
         if (!isNaN(inzoffre) && !isNaN(inzoffim)) {
-            zoffpos.set(inzoffre, inzoffim);
+            cOffset.set(inzoffre, inzoffim);
         }
         if (!isNaN(injre) && !isNaN(injim)) {
-            jpos.set(injre, injim);
+            cJulia.set(injre, injim);
         }
         if (!isNaN(expset)) {
             exponent = expset;
@@ -499,7 +498,7 @@ function start() {
         }
         if (!isNaN(rotateset)) {
             angle = rotateset & (2 * Math.PI);
-            jpos = jpos.rotate(angle);
+            cJulia = cJulia.rotate(angle);
         }
         if (!isNaN(spinincset)) {
             spininc = spinincset;
@@ -527,8 +526,8 @@ function start() {
 
     // Update information panel.
     function updateInfo() {
-        elementSet("zoffpos", "z offset: " + zoffpos.toString(6));
-        elementSet("jpos", "c Julia: " + jpos.toString(6));
+        elementSet("cOffset", "c offset: " + cOffset.toString(6));
+        elementSet("cJulia", "c Julia: " + cJulia.toString(6));
         elementSet("zoom", "Zoom: " + zoom.toExponential(3));
         elementSet("exponent", "Exp: " + exponent);
         elementSet("theme", THEMES[theme] + "+" + shift);
@@ -538,10 +537,10 @@ function start() {
         elementSet("size", size.width + "x" + size.height);
         // Update settings panel if it's visible
         if (document.getElementById("settings").offsetParent !== null) {
-            elementSet("zoffre", zoffpos.re);
-            elementSet("zoffim", zoffpos.im);
-            elementSet("jre", jpos.re);
-            elementSet("jim", jpos.im);
+            elementSet("zoffre", cOffset.re);
+            elementSet("zoffim", cOffset.im);
+            elementSet("jre", cJulia.re);
+            elementSet("jim", cJulia.im);
             elementSet("modeset", setmode);
             elementSet("variantset", setvar);
             elementSet("expset", exponent);
@@ -553,6 +552,7 @@ function start() {
             elementSet("spinincset", spininc);
             elementSet("themeset", theme);
             elementSet("shiftset", shift);
+            elementSet("interpolateset", interp);
             elementSet("swapaxes", swapaxes);
         }
     }
@@ -620,7 +620,7 @@ function start() {
     function doSpinning() {
         if (spinning && setmode === JULIA) {
             var a = spininc / 100;
-            jpos = jpos.rotate(a);
+            cJulia = cJulia.rotate(a);
             angle = (angle + a) % (2 * Math.PI);
             generateImage(imagew, imageh);
         }

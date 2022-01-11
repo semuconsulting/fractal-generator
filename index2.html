@@ -84,7 +84,7 @@
       </div>
     </div> <!-- /.buttons -->
     <div id="status" class="status text-center font-8 width-80">
-      <span id="zoffpos"></span><span id="jpos"></span>
+      <span id="cOffset"></span><span id="cJulia"></span>
       <span id="zoom"></span><span id="exponent"></span><br>
       <span id="setmode"></span><span id="setvar"></span>
       <span id="theme"></span><span id="duration"></span>
@@ -94,7 +94,7 @@
       <h3>Settings</h3>
       <table>
         <tr>
-          <td><label class="wid2" for="zoffre">z offset re:</label></td>
+          <td><label class="wid2" for="zoffre">c Offset re:</label></td>
           <td><input type="text" id="zoffre" name="zoffre"></td>
           <td><label class="wid2" for="zoffim">im:</label></td>
           <td><input type="text" id="zoffim" name="zoffim"> i</td>
@@ -142,6 +142,8 @@
           <td colspan=2><input class="wid2" id="shiftset" type="range" min=0 max=100 value=0></td>
         </tr>
         <tr>
+          <td><label class="wid2" for="interpolateset">Interpolate:</label></td>
+          <td><input type="checkbox" id="interpolateset" name="interpolateset"></td>
           <td><label class="wid2" for="swapaxes">Swap X/Y:</label></td>
           <td><input type="checkbox" id="swapaxes" name="swapaxes"></td>
         </tr>
