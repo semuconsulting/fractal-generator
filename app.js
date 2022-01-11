@@ -36,6 +36,7 @@ function start() {
         "Sqrt Maxiter Hue",
         "Sin Sqrt Maxiter Hue",
         "Grayscale",
+        "2-Color",
     ];
     const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
         "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
@@ -201,44 +202,51 @@ function start() {
     //
     function getColor(scalars, maxiter, theme, shift) {
 
-        var color, h, steps;
-        var i = scalars.i;
-        if (i == maxiter) {
+        if (scalars.i == maxiter&& theme != 9) {
             return new ColorRGB(0, 0, 0, 255); // Black
         }
+        var color, h, steps;
+        var ni = normalize(scalars, radius, exponent); // normalised iteration count
         switch (theme) {
             case 1: // Tropical 256-level cyclic colormap
-                color = getColormap(scalars, COLORMAP_TROP256, shift, interp, radius, exponent);
+                color = getColormap(ni, COLORMAP_TROP256, shift, interp);
                 break;
             case 2: // Cet4s 256-level cyclic colormap
-                color = getColormap(scalars, COLORMAP_CET4S, shift, interp, radius, exponent);
+                color = getColormap(ni, COLORMAP_CET4S, shift, interp);
                 break;
             case 3: // Rainbow HSV 256-level cyclic colormap
-                color = getColormap(scalars, COLORMAP_HSV256, shift, interp, radius, exponent);
+                color = getColormap(ni, COLORMAP_HSV256, shift, interp);
                 break;
             case 4: // Basic hue
                 h = ((i / maxiter) + (shift / 100)) % 1;
                 color = hsv2rgb(h, 0.75, 1);
                 break;
             case 5: // Normalized hue (smoother color gradation than basic)
-                h = ((normalize(scalars, radius, exponent) / maxiter) + (shift / 100)) % 1;
+                h = ((ni / maxiter) + (shift / 100)) % 1;
                 color = hsv2rgb(h, 0.75, 1);
                 break;
             case 6: // Sqrt hue
-                h = ((normalize(scalars, radius, exponent) / Math.sqrt(maxiter)) + (shift / 100)) % 1;
+                h = ((ni / Math.sqrt(maxiter)) + (shift / 100)) % 1;
                 color = hsv2rgb(h, 0.75, 1);
                 break;
             case 7: // Sin sqrt hue
                 steps = 1 + shift / 100;
-                h = 1 - (Math.sin((normalize(scalars, radius, exponent) / Math.sqrt(maxiter) * steps) + 1) / 2);
+                h = 1 - (Math.sin((ni / Math.sqrt(maxiter) * steps) + 1) / 2);
                 color = hsv2rgb(h, 0.75, 1);
                 break;
             case 8: // Grayscale
-                h = ((256 * i / maxiter) + shift) % 255;
+                h = Math.floor((256 * ni / maxiter) + shift) % 256;
                 color = new ColorRGB(h, h, h);
                 break;
+            case 9: // 2-Color
+                h = shift / 100;
+                if (scalars.i == maxiter) {
+                    h = (h + 0.5) % 1;
+                }
+                color = hsv2rgb(h, 0.75, 1);
+                break;
             default: // Blue brown 16-level cyclic colormap
-                color = getColormap(scalars, COLORMAP_BB16, shift, interp, radius, exponent);
+                color = getColormap(ni, COLORMAP_BB16, shift, interp);
                 break;
         }
 

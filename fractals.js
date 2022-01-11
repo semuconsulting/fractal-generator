@@ -31,7 +31,7 @@ const MINITERJ = 600; // Minimum iterations for Julia
 // @param {Complex} cOffset - offset from origin in complex space 
 // @param {number} zoom - zoom level
 // @param {boolean} swap - transpose x/y axes
-// @return {object} - scalars (i = bailout iteration, za = absolute value of z squared)
+// @return {Complex} - complex (re/im) coordinate
 //
 function ptoc(width, height, x, y, cOffset, zoom, swap) {
     var temp;
@@ -53,13 +53,13 @@ function ptoc(width, height, x, y, cOffset, zoom, swap) {
 // configuration) and Complex polar maths for n > 2.
 //
 // @param {Complex} c - complex space coordinate
-// @param {Complex} cOffset - complex space offset from origin
+// @param {Complex} cj - complex origin constant for Julia set
 // @param {number} n - integer exponent
 // @param {number} maxiter - maximum iterations before bailout
 // @param {number} radius - bailout radius squared 
 // @param {number} mode - 0 = Mandelbrot, 1 = Julia
-// @param {number} variant - 0 = standard, 1 = Burning Ship, 2 = Tricorn
-// @return {Complex} - complex (re/im) coordinate
+// @param {number} variant - 0 = Standard, 1 = Burning Ship, 2 = Tricorn
+// @return {object} - scalars (i = bailout iteration, za = absolute value of z squared)
 //
 function fractal(c, cj, n, maxiter, radius, mode, variant) {
 
@@ -136,7 +136,7 @@ function fractal(c, cj, n, maxiter, radius, mode, variant) {
 // @param {Complex} cOffset - complex space offset from origin
 // @param {number} radius - bailout radius
 // @param {number} n - integer exponent
-// @return {number} - normalised iteration count
+// @return {number} - normalised bailout iteration count
 //
 function normalize(scalars, radius, exponent) {
     var lzn = Math.log(scalars.za) * 2;

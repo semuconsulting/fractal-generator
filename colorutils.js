@@ -100,7 +100,7 @@ function hsv2rgb(h, s, v) {
 
 // Get interpolated pixel color from RGB colormap.
 //
-// @param {object} scalars - scalars {i, za} from fractals() function
+// @param {object} ni - normalised bailout iteration count
 // @param {object} colmap - colormap RGB array
 // @param {number} shift - shift colormap along gradient
 // @param {boolean} interp - interpolate colours true/false
@@ -108,10 +108,9 @@ function hsv2rgb(h, s, v) {
 // @param {number} exponent - integer exponent
 // @return {ColorRGB} - RGB color object
 //
-function getColormap(scalars, colmap, shift, interp, radius, exponent) {
+function getColormap(ni, colmap, shift, interp) {
 
     try {
-        var ni = normalize(scalars, radius, exponent); // normalised iteration count
         var sh = Math.ceil(shift * (colmap.length) / 100); // gradient shift
         var col = colmap[(Math.floor(ni) + sh) % colmap.length];
         var col1 = new ColorRGB(col[0], col[1], col[2]);
