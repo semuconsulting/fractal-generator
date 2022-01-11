@@ -2,10 +2,8 @@
 // Interactive fractal generation using JavaScript and the 
 // HTML5 Canvas element.
 //
-// Uses Complex object type from complexlite.js library.
-//
-// fractal() function features a number of optimisations to minimise the 
-// number of maths operations per iteration.
+// Uses Complex object type from complexlite.js
+// and fractal rendering routins from fractals.js.
 //
 // Copyright (c) 2021 Algol Variables
 //
@@ -19,14 +17,6 @@ const CANVAS_INSET = 0.8; // image inset relative to document
 // Main interactive fractal routine
 function start() {
 
-    const MANDELBROT = 0;
-    const JULIA = 1;
-    const STANDARD = 0;
-    const BURNING_SHIP = 1;
-    const TRICORN = 2;
-    const PHOENIX = 3;
-    const MINITERM = 100; // Minimum iterations for Mandelbrot
-    const MINITERJ = 200; // Minimum iterations for Julia
     const SETMODES = [
         "Mandelbrot",
         "Julia",
@@ -67,8 +57,8 @@ function start() {
     var imagedata = ctx.createImageData(imagew, imageh);
     var setmode; // Fractal set type (Mandelbrot/Julia)
     var setvar; // Fractal set variation (Standard/BurningShip/Tricorn)
-    var pinit = new Complex(0, 0); // Initial mouse click complex coordinate
-    var cpos = new Complex(0, 0); // Constant complex coordinate
+    var pinit = new Complex(0, 0); // Mouse click complex coordinate
+    var jpos = new Complex(0, 0); // Constant Complex coordinate for Julia sets
     var zoffpos = new Complex(-0.5, 0); // Offset (pan) complex coordinate
     var zoom;
     var maxiter;
@@ -83,6 +73,7 @@ function start() {
     var duration = 0;
     var spinning = false;
     var zooming = false;
+    var angle = 0; // Current Julia rotation angle
     var spininc = 1; // Julia rotate/spin increment in degrees
     var swapaxes = false;
 
@@ -151,8 +142,8 @@ function start() {
 
     // Reset to default settings.
     function reset() {
-        cpos.set(0, 0);
         zoffpos.set(-0.5, 0);
+        jpos.set(0, 0);
         zoom = 0.75;
         maxiter = MINITERM;
         zoominc = 1.5;
@@ -167,22 +158,23 @@ function start() {
         zooming = false;
         spininc = 1;
         swapaxes = false;
+        angle = 0;
         updateInfo();
     }
 
     // Generate the fractal image.
     function generateImage(width, height) {
         duration = Date.now();
-        var x, y, ppos, scalars, color;
+        var x, y, cpos, scalars, color;
         var radius2 = radius ** 2; // Square here to save a step inside the iteration 
         // Calculate number of iterations based on zoom level
         maxiter = autoiter ? getAutoiter(zoom, setmode) : maxiter;
         for (x = 0; x < width; x += 1) {
             for (y = 0; y < height; y += 1) {
                 // Convert pixel coordinate to complex plane coordinate
-                ppos = ptoc(width, height, x, y, zoffpos, zoom);
+                cpos = ptoc(width, height, x, y, zoffpos, zoom, swapaxes);
                 // Calculate fractal escape scalars
-                scalars = fractal(ppos, cpos, exponent, maxiter, radius2);
+                scalars = fractal(cpos, jpos, exponent, maxiter, radius2, setmode, setvar);
                 // Pass escape scalars to pixel coloring algorithm
                 color = getColor(scalars, maxiter, theme, shift);
                 // Plot pixel in imagemap
@@ -192,110 +184,6 @@ function start() {
         duration = Date.now() - duration;
         inProgress(false);
         updateInfo();
-    }
-
-    // Converts pixel (x/y) coordinates to complex (real/imaginary) space coordinates
-    // (zoffpos is always the complex offset).
-    function ptoc(width, height, x, y, zoffpos, zoom) {
-        var temp;
-        if (swapaxes) { // X/Y axes are swapped
-            temp = x;
-            x = y;
-            y = temp;
-            temp = width;
-            width = height;
-            height = temp;
-        }
-        var re = zoffpos.re + ((width / height) * (x - width / 2) / (zoom * width / 2));
-        var im = zoffpos.im + (-1 * (y - height / 2) / (zoom * height / 2));
-        return new Complex(re, im);
-    }
-
-    // Calculate the escape scalars for the complex coordinates p, c and integer 
-    // exponent n. Uses basic maths for n = 2 (the most common Mandelbrot 
-    // configuration) and Complex polar maths for n > 2.
-    function fractal(p, c, n, maxiter, radius) {
-
-        var i, za, zre, zim, zre2, zim2, tre, cre, cim, r, θ;
-        var lastre = 0;
-        var lastim = 0;
-        var per = 0;
-        if (setmode === JULIA) {
-            cre = c.re;
-            cim = c.im;
-            zre = p.re;
-            zim = p.im;
-        }
-        else { // Mandelbrot mode
-            cre = p.re;
-            cim = p.im;
-            zre = 0;
-            zim = 0;
-        }
-
-        // Iterate until abs(z) exceeds escape radius
-        for (i = 0; i < maxiter; i += 1) {
-
-            if (setvar === BURNING_SHIP) {
-                zre = Math.abs(zre);
-                zim = -Math.abs(zim);
-            }
-            else if (setvar === TRICORN) {
-                zim = -zim; // conjugate z
-            }
-
-            // doing squaring now saves a couple of calculations later
-            zre2 = zre * zre;
-            zim2 = zim * zim;
-            za = zre2 + zim2 // abs(z)²
-            if (za > radius) { // abs(z)² > radius²
-                break;
-            }
-
-            if (n == 2) { // z = z² + c
-                tre = zre2 - zim2 + cre;
-                zim = 2 * zre * zim + cim;
-                zre = tre;
-            }
-            else { // z = zⁿ + c, where n is integer > 2
-                r = powi(Math.sqrt(zre2 + zim2), n); // radiusⁿ
-                θ = n * Math.atan2(zim, zre); // angleⁿ
-                zre = r * Math.cos(θ) + cre;
-                zim = r * Math.sin(θ) + cim;
-            }
-
-            // Periodicity check optimisation - speeds
-            // up processing of points within set
-            if (zre === lastre && zim === lastim) {
-                i = maxiter;
-                break;
-            }
-            per += 1;
-            if (per > 20) {
-                per = 0;
-                lastre = zre;
-                lastim = zim;
-            }
-            // ... end of periodicity check
-
-        }
-        return { i, za };
-    }
-
-    // Optimised pow() function for integer exponent n
-    // using 'halving and squaring'. Significantly Faster
-    // than Math.pow() for integer exponents.
-    function powi(base, n) {
-
-        var res = 1;
-        while (n) {
-            if (n & 1) { // if n is odd
-                res *= base;
-            }
-            n >>= 1; // n/2
-            base *= base;
-        }
-        return res;
     }
 
     // Get pixel color for given escape scalars and color theme.
@@ -321,16 +209,16 @@ function start() {
                 color = hsv2rgb(h, 0.75, 1);
                 break;
             case 5: // Normalized hue (smoother color gradation than basic)
-                h = ((normalize(scalars) / maxiter) + (shift / 100)) % 1;
+                h = ((normalize(scalars, radius, exponent) / maxiter) + (shift / 100)) % 1;
                 color = hsv2rgb(h, 0.75, 1);
                 break;
             case 6: // Sqrt hue
-                h = ((normalize(scalars) / Math.sqrt(maxiter)) + (shift / 100)) % 1;
+                h = ((normalize(scalars, radius, exponent) / Math.sqrt(maxiter)) + (shift / 100)) % 1;
                 color = hsv2rgb(h, 0.75, 1);
                 break;
             case 7: // Sin sqrt hue
                 steps = 1 + shift / 100;
-                h = 1 - (Math.sin((normalize(scalars) / Math.sqrt(maxiter) * steps) + 1) / 2);
+                h = 1 - (Math.sin((normalize(scalars, radius, exponent) / Math.sqrt(maxiter) * steps) + 1) / 2);
                 color = hsv2rgb(h, 0.75, 1);
                 break;
             case 8: // Banded rgb
@@ -354,7 +242,7 @@ function start() {
     function getColormap(scalars, colmap, shift = 0) {
 
         try {
-            var ni = normalize(scalars); // normalised iteration count
+            var ni = normalize(scalars, radius, exponent); // normalised iteration count
             var sh = Math.ceil(shift * (colmap.length) / 100); // palette shift
             var col1 = colmap[(Math.floor(ni) + sh) % colmap.length];
             var col2 = colmap[(Math.floor(ni) + sh + 1) % colmap.length];
@@ -375,73 +263,6 @@ function start() {
         imagedata.data[pixelindex + 3] = 255;
     }
 
-    // Normalize iteration count from escape scalars
-    // to produces smoother color gradients.
-    // scalars := {i, za}
-    function normalize(scalars) {
-        var lzn = Math.log(scalars.za) * 2;
-        var nu = Math.log(lzn / Math.log(radius)) / Math.log(exponent);
-        return scalars.i + 1 - nu;
-    }
-
-    // Linear interpolation between two colors
-    // (assumes colormaps are [r, g, b] arrays).
-    function interpolate(col1, col2, ni) {
-        var f = ni % 1; // fractional part of ni
-        var r = (col2[0] - col1[0]) * f + col1[0];
-        var g = (col2[1] - col1[1]) * f + col1[1];
-        var b = (col2[2] - col1[2]) * f + col1[2];
-        return { r: r, g: g, b: b }
-    }
-
-    // Convert HSV values (in range 0-1) to RGB (in range 0-255).
-    function hsv2rgb(h, s, v) {
-
-        var i, f, p, q, t, col;
-
-        v = parseInt(v * 255);
-        if (s === 0.0) {
-            return { r: v, g: v, b: v };
-        }
-        i = parseInt(h * 6.0);
-        f = (h * 6.0) - i;
-        p = parseInt(v * (1.0 - s));
-        q = parseInt(v * (1.0 - s * f));
-        t = parseInt(v * (1.0 - s * (1.0 - f)));
-        switch (i %= 6) {
-            case 0:
-                col = { r: v, g: t, b: p };
-                break;
-            case 1:
-                col = { r: q, g: v, b: p };
-                break;
-            case 2:
-                col = { r: p, g: v, b: t };
-                break;
-            case 3:
-                col = { r: p, g: q, b: v };
-                break;
-            case 4:
-                col = { r: t, g: p, b: v };
-                break;
-            case 5:
-                col = { r: v, g: p, b: q };
-                break;
-            default:
-                col = { r: v, g: v, b: v };
-        }
-        return col;
-    }
-
-    // Arbitrary algorithm to derive 'optimal' max iterations for a given
-    // zoom level, enhancing legibility at higher magnifications.
-    // Can be overridden by setting autoiter to False - often worth experimenting
-    // for best cosmetic results.
-    function getAutoiter(zoom, setmode) {
-        var miniter = setmode === JULIA ? MINITERJ : MINITERM;
-        return Math.max(miniter, parseInt(Math.abs(500 * Math.log(1 / Math.sqrt(zoom)))));
-    }
-
     // Mouse down handler.
     function onMouseDown(e) {
         var mpos = getMousePos(canvas, e);
@@ -455,7 +276,7 @@ function start() {
         if (e.altKey) { // toggle between Julia and Mandelbrot
             if (setmode === MANDELBROT) {
                 setmode = JULIA;
-                cpos = pinit;
+                jpos = pinit;
                 zoffpos.set(0, 0);
             } else {
                 setmode = MANDELBROT;
@@ -559,12 +380,13 @@ function start() {
                 reset();
                 break;
             case "btnMode": // t = cycle through modes
-                cpos = pinit; // pinit set via prior mouse click
                 setmode = (setmode + 1) % SETMODES.length;
                 if (setmode === MANDELBROT) {
                     zoffpos.set(-0.5, 0);
+                    jpos.set(0, 0)
                 } else {
                     zoffpos.set(0, 0);
+                    jpos = pinit; // pinit set via prior mouse click
                 }
                 break;
             case "btnVariant": // v = cycle through set variants
@@ -586,10 +408,14 @@ function start() {
                 }
                 break;
             case "btnJuliaDown": // left arrow = rotate Julia left
-                cpos = cpos.rotate(spininc * Math.PI / 180);
+                var a = spininc * Math.PI / 180;
+                jpos = jpos.rotate(a);
+                angle = (angle + a) % (2 * Math.PI);
                 break;
             case "btnJuliaUp": // right arrow = rotate Julia right
-                cpos = cpos.rotate(-spininc * Math.PI / 180);
+                var a = -spininc * Math.PI / 180;
+                jpos = jpos.rotate(a);
+                angle = (angle + a) % (2 * Math.PI);
                 break;
             case "btnJuliaSpin": // toggle automated Julia spin
                 spinning = !spinning;
@@ -636,17 +462,16 @@ function start() {
 
     // Plot image using manual settings.
     function doValidateSettings() {
-        var inpre = parseFloat(document.getElementById("pre").value);
-        var inpim = parseFloat(document.getElementById("pim").value);
-        var incre = parseFloat(document.getElementById("cre").value);
-        var incim = parseFloat(document.getElementById("cim").value);
         var inzoffre = parseFloat(document.getElementById("zoffre").value);
         var inzoffim = parseFloat(document.getElementById("zoffim").value);
+        var injre = parseFloat(document.getElementById("jre").value);
+        var injim = parseFloat(document.getElementById("jim").value);
         var expset = parseInt(document.getElementById("expset").value);
         var maxiset = parseInt(document.getElementById("maxiset").value);
         autoiter = document.getElementById("autoiter").checked;
         var zoomset = parseFloat(document.getElementById("zoomset").value);
         var zoomincset = parseFloat(document.getElementById("zoomincset").value);
+        var rotateset = parseFloat(document.getElementById("rotateset").value);
         var spinincset = parseFloat(document.getElementById("spinincset").value);
         var shiftset = document.getElementById("shiftset").value;
         setmode = document.getElementById("modeset").selectedIndex;
@@ -654,14 +479,11 @@ function start() {
         theme = document.getElementById("themeset").selectedIndex;
         swapaxes = document.getElementById("swapaxes").checked;
 
-        if (!isNaN(inpre) && !isNaN(inpim)) {
-            pinit.set(inpre, inpim);
-        }
-        if (!isNaN(incre) && !isNaN(incim)) {
-            cpos.set(incre, incim);
-        }
         if (!isNaN(inzoffre) && !isNaN(inzoffim)) {
             zoffpos.set(inzoffre, inzoffim);
+        }
+        if (!isNaN(injre) && !isNaN(injim)) {
+            jpos.set(injre, injim);
         }
         if (!isNaN(expset)) {
             exponent = expset;
@@ -674,6 +496,10 @@ function start() {
         }
         if (!isNaN(zoomincset)) {
             zoominc = zoomincset;
+        }
+        if (!isNaN(rotateset)) {
+            angle = rotateset & (2 * Math.PI);
+            jpos = jpos.rotate(angle);
         }
         if (!isNaN(spinincset)) {
             spininc = spinincset;
@@ -701,8 +527,8 @@ function start() {
 
     // Update information panel.
     function updateInfo() {
-        elementSet("ppos", "P: " + pinit.toString(6));
-        elementSet("cpos", "C: " + cpos.toString(6));
+        elementSet("zoffpos", "z offset: " + zoffpos.toString(6));
+        elementSet("jpos", "c Julia: " + jpos.toString(6));
         elementSet("zoom", "Zoom: " + zoom.toExponential(3));
         elementSet("exponent", "Exp: " + exponent);
         elementSet("theme", THEMES[theme] + "+" + shift);
@@ -712,12 +538,10 @@ function start() {
         elementSet("size", size.width + "x" + size.height);
         // Update settings panel if it's visible
         if (document.getElementById("settings").offsetParent !== null) {
-            elementSet("pre", pinit.re);
-            elementSet("pim", pinit.im);
-            elementSet("cre", cpos.re);
-            elementSet("cim", cpos.im);
             elementSet("zoffre", zoffpos.re);
             elementSet("zoffim", zoffpos.im);
+            elementSet("jre", jpos.re);
+            elementSet("jim", jpos.im);
             elementSet("modeset", setmode);
             elementSet("variantset", setvar);
             elementSet("expset", exponent);
@@ -725,6 +549,7 @@ function start() {
             elementSet("autoiter", autoiter);
             elementSet("zoomset", zoom);
             elementSet("zoomincset", zoominc);
+            elementSet("rotateset", angle);
             elementSet("spinincset", spininc);
             elementSet("themeset", theme);
             elementSet("shiftset", shift);
@@ -794,7 +619,9 @@ function start() {
     // spininc determines the speed of rotation.
     function doSpinning() {
         if (spinning && setmode === JULIA) {
-            cpos = cpos.rotate(spininc / 100);
+            var a = spininc / 100;
+            jpos = jpos.rotate(a);
+            angle = (angle + a) % (2 * Math.PI);
             generateImage(imagew, imageh);
         }
     }

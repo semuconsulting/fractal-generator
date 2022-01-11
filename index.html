@@ -10,7 +10,8 @@
   <link href="./styles.css" rel="stylesheet">
   <script src="./colormaps.js"></script>
   <script src="./complexlite.js"></script>
-  <script src="./fractal.js"></script>
+  <script src="./fractals.js"></script>
+  <script src="./app.js"></script>
   <title>Fractal Generator</title>
 </head>
 
@@ -89,7 +90,7 @@
       </div>
     </div> <!-- /.buttons -->
     <div id="status" class="status">
-      <span id="ppos"></span><span id="cpos"></span>
+      <span id="zoffpos"></span><span id="jpos"></span>
       <span id="zoom"></span><span id="exponent"></span><br>
       <span id="setmode"></span><span id="setvar"></span>
       <span id="theme"></span><span id="duration"></span>
@@ -99,22 +100,16 @@
       <h3>Settings</h3>
       <table>
         <tr>
-          <td><label class="wid2" for="pre">p re:</label></td>
-          <td><input type="text" id="pre" name="pre"></td>
-          <td><label class="wid2" for="pim">im:</label></td>
-          <td><input type="text" id="pim" name="pim"> i</td>
-        </tr>
-        <tr>
-          <td><label class="wid2" for="cre">c re:</label></td>
-          <td><input type="text" id="cre" name="cre"></td>
-          <td><label class="wid2" for="cim">im:</label></td>
-          <td><input type="text" id="cim" name="cim"> i</td>
-        </tr>
-        <tr>
           <td><label class="wid2" for="zoffre">z offset re:</label></td>
           <td><input type="text" id="zoffre" name="zoffre"></td>
           <td><label class="wid2" for="zoffim">im:</label></td>
           <td><input type="text" id="zoffim" name="zoffim"> i</td>
+        </tr>
+        <tr>
+          <td><label class="wid2" for="jre">c Julia re:</label></td>
+          <td><input type="text" id="jre" name="jre"></td>
+          <td><label class="wid2" for="jim">im:</label></td>
+          <td><input type="text" id="jim" name="jim"> i</td>
         </tr>
         <tr>
           <td><label class="wid2" for="maxiset">Max Iter:</label></td>

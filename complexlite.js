@@ -86,3 +86,19 @@ function cart(r, θ) {
   var im = r * Math.sin(θ);
   return new Complex(re, im);
 }
+
+// Optimised pow() function for integer exponent n
+// using 'halving and squaring'. Significantly Faster
+// than Math.pow() for integer exponents.
+function powi(base, n) {
+
+  var res = 1;
+  while (n) {
+    if (n & 1) { // if n is odd
+      res *= base;
+    }
+    n >>= 1; // n/2
+    base *= base;
+  }
+  return res;
+}
