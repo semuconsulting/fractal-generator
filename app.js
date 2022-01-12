@@ -534,7 +534,7 @@ function start() {
 
     // Update information panel.
     function updateInfo() {
-        elementSet("cOffset", "c offset: " + cOffset.toString(6));
+        elementSet("cOffset", "c Offset: " + cOffset.toString(6));
         elementSet("cJulia", "c Julia: " + cJulia.toString(6));
         elementSet("zoom", "Zoom: " + zoom.toExponential(3));
         elementSet("exponent", "Exp: " + exponent);
