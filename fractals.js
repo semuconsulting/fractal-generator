@@ -133,7 +133,6 @@ function fractal(c, cj, n, maxiter, radius, mode, variant) {
 // to produces smoother color gradients.
 //
 // @param {object} scalars - scalars {i, za} returned by fractals() function
-// @param {Complex} cOffset - complex space offset from origin
 // @param {number} radius - bailout radius
 // @param {number} n - integer exponent
 // @return {number} - normalised bailout iteration count
