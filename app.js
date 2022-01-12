@@ -104,6 +104,7 @@ function start() {
         // Generate colormaps
         colmaps.push(makeColormap(COLORMAP_BB16, 256, 4));
         colmaps.push(makeColormap(COLORMAP_TROP16, 256, 0));
+        colmaps.push(makeColormap(COLORMAP_CET16, 256, 0));
 
         // Reset initial settings
         reset();
@@ -223,7 +224,7 @@ function start() {
                 color = getColormap(ni, colmaps[1], shift, interp);
                 break;
             case 2: // Cet4s 256-level cyclic colormap
-                color = getColormap(ni, COLORMAP_CET4S, shift, interp);
+                color = getColormap(ni, colmaps[2], shift, interp);
                 break;
             case 3: // Rainbow HSV 256-level cyclic colormap
                 color = getColormap(ni, COLORMAP_HSV256, shift, interp);

@@ -6,6 +6,7 @@
   <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
   <link href="./styles.css" rel="stylesheet">
+  <!-- You can also require other files to run in this process -->
   <title>Fractal Generator</title>
 </head>
 
@@ -149,16 +150,42 @@
           <td><input type="checkbox" id="swapaxes" name="swapaxes"></td>
         </tr>
         <tr>
-          <td colspan=3></td>
+          <td colspan=5></td>
           <td><button id="btnApply">APPLY</button></td>
         </tr>
       </table>
+      <div id="palette" class="palette">
+        <h3>Custom Color Palette</h3>
+        <table>
+          <tr>
+            <td><input type="color" id="color01" value="#222222"></td>
+            <td><input type="color" id="color02" value="#222222"></td>
+            <td><input type="color" id="color03" value="#222222"></td>
+            <td><input type="color" id="color04" value="#222222"></td>
+            <td><input type="color" id="color05" value="#222222"></td>
+            <td><input type="color" id="color06" value="#222222"></td>
+            <td><input type="color" id="color07" value="#222222"></td>
+            <td><input type="color" id="color08" value="#222222"></td>
+          </tr>
+          <tr>
+            <td><input type="color" id="color09" value="#222222"></td>
+            <td><input type="color" id="color10" value="#222222"></td>
+            <td><input type="color" id="color11" value="#222222"></td>
+            <td><input type="color" id="color12" value="#222222"></td>
+            <td><input type="color" id="color13" value="#222222"></td>
+            <td><input type="color" id="color14" value="#222222"></td>
+            <td><input type="color" id="color15" value="#222222"></td>
+            <td><input type="color" id="color16" value="#222222"></td>
+          </tr>
+        </table>
+      </div> <!-- ./palette -->
     </div> <!-- ./settings -->
     <div id="help" class="help font-8 width-80">
       <h3>How to use Fractal Generator</h3>
       <table>
         <tr>
-          <td class="instruct" colspan=2>Click anywhere in the image to zoom in at the current cursor position by the zoom
+          <td class="instruct" colspan=2>Click anywhere in the image to zoom in at the current cursor position by the
+            zoom
             increment amount.</td>
         </tr>
         <tr>
@@ -271,12 +298,11 @@
       </p>
     </div> <!-- /.help -->
   </div> <!-- /.main-container -->
-  <!-- You can also require other files to run in this process -->
-  <script src="./complexlite.js"></script>
-  <script src="./colorutils.js"></script>
-  <script src="./fractalutils.js"></script>
-  <script src="./app.js"></script>
-  <script src="./renderer.js"></script>
 </body>
+<script src="./complexlite.js"></script>
+<script src="./colorutils.js"></script>
+<script src="./fractalutils.js"></script>
+<script src="./app.js"></script>
+<script src="./renderer.js"></script>
 
 </html>
