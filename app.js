@@ -2,8 +2,10 @@
 // Interactive fractal generation using JavaScript and the 
 // HTML5 Canvas element.
 //
-// Uses Complex object type from complexlite.js
-// and fractal rendering routins from fractals.js.
+// Dependencies:
+// complexlite.js - basic complex maths library.
+// colorutils.js - utility library for color rendering routines.
+// fractalutils.js - utility library for fractal calculations.
 //
 // Copyright (c) 2021 Algol Variables
 //
@@ -27,7 +29,7 @@ function start() {
         "Tricorn",
     ]
     const THEMES = [ // Remember to update if you add more themes
-        "Blue/Brown Cyclic 16",
+        "Blue/Brown Cyclic 256",
         "Tropical Cyclic 256",
         "CET4s Cyclic 256",
         "Rainbow Cyclic 256",
@@ -37,6 +39,8 @@ function start() {
         "Sin Sqrt Maxiter Hue",
         "Grayscale",
         "2-Color",
+        "Experimental1",
+        "Experimental2",
     ];
     const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
         "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
@@ -77,6 +81,7 @@ function start() {
     var spininc = 1; // Julia rotate/spin increment in degrees
     var interp = true; // interpolate colors
     var swapaxes = false;
+    var colmaps = []; // array of generated colormaps
 
     // Initialize the interactive canvas.
     function init() {
@@ -96,10 +101,16 @@ function start() {
         selectPopulate("variantset", SETVARS);
         selectPopulate("themeset", THEMES);
 
+        // Generate colormaps
+        colmaps.push(makeColormap(COLORMAP_BB16, 256, 4));
+        colmaps.push(makeColormap(COLORMAP_TROP16, 256, 0));
+
         // Reset initial settings
         reset();
+
         // Generate image
         generateImage(imagew, imageh);
+
         // Enter main loop
         main(0);
     }
@@ -209,7 +220,7 @@ function start() {
         var ni = normalize(scalars, radius, exponent); // normalised iteration count
         switch (theme) {
             case 1: // Tropical 256-level cyclic colormap
-                color = getColormap(ni, COLORMAP_TROP256, shift, interp);
+                color = getColormap(ni, colmaps[1], shift, interp);
                 break;
             case 2: // Cet4s 256-level cyclic colormap
                 color = getColormap(ni, COLORMAP_CET4S, shift, interp);
@@ -245,8 +256,14 @@ function start() {
                 }
                 color = hsv2rgb(h, 0.75, 1);
                 break;
+            case 10: // Experimental1
+                color = getColormap(ni, colmaps[0], shift, interp);
+                break;
+            case 11: // Experimental2
+                color = getColormap(ni, colmaps[1], shift, interp);
+                break;
             default: // Blue brown 16-level cyclic colormap
-                color = getColormap(ni, COLORMAP_BB16, shift, interp);
+                color = getColormap(ni, colmaps[0], shift, interp);
                 break;
         }
 
@@ -562,6 +579,7 @@ function start() {
             elementSet("shiftset", shift);
             elementSet("interpolateset", interp);
             elementSet("swapaxes", swapaxes);
+            elementSet("shiftval", shift);
         }
     }
 

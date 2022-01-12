@@ -1,9 +1,6 @@
 // ------------------------------------------------------------------------
-// Defines ColorRGB object, color manipulation functions and
+// Utility library defining color rendering functions and
 // cyclic colormaps for fractal generator.
-//
-// Does not use an RGB color class as instantiating new class instances
-// represents a significant overhead in the iterative fractal computation.
 //
 // Copyright (c) 2021 Algol Variables
 // ------------------------------------------------------------------------
@@ -18,9 +15,9 @@
 //
 function interpolate(col1, col2, ni) {
     var f = ni % 1; // fractional part of ni
-    var r = (col2.r - col1.r) * f + col1.r;
-    var g = (col2.g - col1.g) * f + col1.g;
-    var b = (col2.b - col1.b) * f + col1.b;
+    var r = Math.floor((col2.r - col1.r) * f + col1.r);
+    var g = Math.floor((col2.g - col1.g) * f + col1.g);
+    var b = Math.floor((col2.b - col1.b) * f + col1.b);
     return { r: r, g: g, b: b, a: 255 };
 }
 
@@ -100,6 +97,40 @@ function getColormap(ni, colmap, shift, interp) {
         return { r: 255, g: 255, b: 255, a: 255 };
     }
 }
+
+// Generate RGB colormap array from palette of key colors.
+//
+// @param {object} colors - array of RGB colors [[r,g,b],[r,g,b],...]
+// @param {number} levels - number of levels in colormap e.g. 256
+// @param {number} shift - shift colormap index
+// @return {object} - RGB color map [[r,g,b],[r,g,b],...]
+//
+function makeColormap(colors, levels, shift) {
+
+    var i, cidx, col, col1, col2;
+    var clen = colors.length;
+    var f = clen / levels;
+    var cmap = [];
+    var fi = 0;
+    for (i = 0; i < levels; i += 1) {
+        cidx = Math.floor(i / clen + shift);
+        col = colors[cidx % clen];
+        col1 = { r: col[0], g: col[1], b: col[2] }
+        col = colors[(cidx + 1) % clen];
+        col2 = { r: col[0], g: col[1], b: col[2] }
+        col = interpolate(col1, col2, fi);
+        cmap.push([col.r, col.g, col.b])
+        fi = (fi + f) % 1;
+    }
+    return cmap;
+}
+
+const COLORMAP_TROP16 = [
+    [3, 72, 0], [24, 111, 10], [51, 147, 22], [219, 188, 47],
+    [240, 131, 42], [243, 61, 33], [217, 66, 40], [191, 71, 46],
+    [134, 81, 80], [126, 78, 186], [125, 92, 254], [140, 155, 251],
+    [162, 246, 245], [112, 225, 91], [100, 186, 44], [93, 12, 70]
+]
 
 const COLORMAP_BB16 = [
     [66, 30, 15], [25, 7, 26], [9, 1, 47], [4, 4, 73],

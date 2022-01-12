@@ -80,6 +80,10 @@ label.wid1 {
     width: 20px;
 }
 
+.text-left {
+    text-align: left;
+}
+
 .text-center {
     text-align: center;
 }

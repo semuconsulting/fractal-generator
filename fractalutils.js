@@ -1,6 +1,6 @@
 // ------------------------------------------------------------------------
-// Core fractal calculation and color rendering functions for 
-// fractal generator.
+// Utility library defining core fractal calculations for fractal 
+// generator.
 //
 // Uses Complex object type from complexlite.js library.
 //

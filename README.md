@@ -48,7 +48,7 @@ git clone https://github.com/Algol-Variables/fractal-generator
 # Go into the repository
 cd fractal-generator
 # Copy files to required web server directory e.g. /var/www/html/fractal/
-cp {index.html, complexlite.js, colorutils.js, app.js, fractals.js, styles.css, resources/*} /var/www/html/fractal
+cp {complexlite.js, colorutils.js, fractalutils.js, app.js, index.html, styles.css, resources/*} /var/www/html/fractal
 ```
 See, for example: [fractal-generator](https://www.algolvariables.com/fractals/)
 
