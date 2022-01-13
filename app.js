@@ -39,10 +39,8 @@ function start() {
         "Sin Sqrt Maxiter Hue",
         "Grayscale",
         "2-Color",
-        "Experimental1",
-        "Experimental2",
     ]
-    const STATICTHEMES = 9; // Number of color themes not mapped in colmaps[]
+    const STATICTHEMES = THEMES.length - 3; // Number of color themes not mapped in colmaps[]
     const PALETTE = [4, 8, 12, 16];
     const LEVELS = [16, 32, 64, 128, 256];
     const INTERPOLATIONS = ["none", "linear"];
@@ -88,18 +86,17 @@ function start() {
     var pickpalette = 3; // Default palette depth = 16
     var picklevels = 4; // Default colormap depth = 256
     var swapaxes = false; // Transpose X/Y axes
-    var colmaps = []; // Array of generated colormaps
+    var colmaps = []; // Array of generated colormaps (gradients)
     var lastcolmap = THEMES.length; // Counter for user-generated color themes
 
     // Initialize the interactive canvas.
     function init() {
 
         var i, x;
-        // Add mouse events
+        // Add mouse event handlers
         canvas.addEventListener("mousedown", onMouseDown);
         canvas.addEventListener("mousemove", onMouseMove);
         canvas.addEventListener("mouseup", onMouseUp);
-
         // Add button event handlers
         for (i in BUTTONS) {
             document.getElementById(BUTTONS[i]).addEventListener("click", onButtonClick);
@@ -120,9 +117,9 @@ function start() {
         selectPopulate("interpset", INTERPOLATIONS);
 
         // Generate colormaps
-        colmaps.push(makeColormap(COLORMAP_BB16, 256, 4)); // [0]
-        colmaps.push(makeColormap(COLORMAP_TROP16, 256, 0)); // [1]
-        colmaps.push(makeColormap(COLORMAP_CET16, 256, 0)); // [2]
+        colmaps.push(makeColormap(palettes[0], 256, 4)); // [0]
+        colmaps.push(makeColormap(palettes[1], 256, 0)); // [1]
+        colmaps.push(makeColormap(palettes[2], 256, 0)); // [2]
 
         // Reset initial settings
         reset();
@@ -280,12 +277,6 @@ function start() {
                     h = (h + 0.5) % 1;
                 }
                 color = hsv2rgb(h, 0.75, 1);
-                break;
-            case 10: // Experimental1
-                color = getColormap(ni, colmaps[0], shift, interp);
-                break;
-            case 11: // Experimental2
-                color = getColormap(ni, colmaps[1], shift, interp);
                 break;
             default: // Blue brown 16-level cyclic colormap
                 color = getColormap(ni, colmaps[theme - STATICTHEMES], shift, interp);
@@ -478,7 +469,7 @@ function start() {
                 palette.style.display = palette.style.display === "block" ? "none" : "block";
                 if (settings.style.display === "block") {
                     btn.style.backgroundColor = "lightblue";
-                    // setPaint(); TODO
+                    setPalette();
                 } else {
                     btn.style.backgroundColor = "white";
                 }
@@ -495,6 +486,7 @@ function start() {
             }
             case "btnApply": // apply manual settings
                 doValidateSettings();
+                setPalette();
                 break;
             case "btnPaint": // generate color map
                 doPaint();
@@ -582,22 +574,22 @@ function start() {
         pal.style.backgroundColor = col;
     }
 
-    // TODO Populate palette from selected color theme.
-    function setPaint() {
+    // Populate palette from selected color theme.
+    function setPalette() {
         console.log("doing setPaint");
         var i, idx, col, coln, pal;
         if (theme < 3) {
             idx = theme;
         }
-        else if (theme > 11) { // User generated themes
+        else if (theme > THEMES.length - 1) { // User generated themes
             idx = theme - STATICTHEMES;
         }
         else return;
-        for (i = 0; i < colmaps[idx].length; i += 1) {
-            col = colmaps[idx][i];
-            console.log(i, theme, idx, col)
-            coln = RGBtoHex(col[0],col[1],col[2]);
+        for (i = 0; i < palettes[idx].length; i += 1) {
+            col = palettes[idx][i];
+            coln = RGBtoHex(col[0], col[1], col[2]);
             pal = document.getElementById("color" + (i + 1));
+            pal.value = coln;
             pal.style.backgroundColor = coln;
         }
     }
@@ -613,6 +605,7 @@ function start() {
             sel = document.getElementById("color" + (i + 1));
             colmap.push(HextoRGB(sel.value));
         }
+        palettes.push(colmap);
         colmaps.push(makeColormap(colmap, levels, interp));
         opt = document.createElement("option");
         opt.value = lastcolmap;
