@@ -128,12 +128,22 @@ function makeColormap(palette, levels, shift) {
     return cmap;
 }
 
+// Convert integer to hex string.
+//
+// @param {number} val - integer value (max 255)
+// @return {string} - hex string e.g. 'fa'
+//
+function valtoHex(val) {
+    var hex = val.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
 // Convert hex color string to [r,g,b].
 //
 // @param {string} hex - hex color string e.g. #ff5523
 // @return {object} - RGB array [r,g,b]
 //
-function HEXtoRGB(hex) {
+function HextoRGB(hex) {
     hex = hex.replace(/#/g, '');
     if (hex.length === 3) {
         hex = hex.split('').map(function (hex) {
@@ -154,6 +164,17 @@ function HEXtoRGB(hex) {
     }
 }
 
+// Convert [r,g,b] value to hex color string.
+//
+// @param {number} r - red value
+// @param {number} g - green value
+// @param {number} b - blue value
+// @return {string} - hex color string e.g. '#12fa45'
+//
+function RGBtoHex(r, g, b) {
+    return "#" + valtoHex(r) + valtoHex(g) + valtoHex(b);
+}
+
 const COLORMAP_TROP16 = [
     [3, 72, 0], [24, 111, 10], [51, 147, 22], [219, 188, 47],
     [240, 131, 42], [243, 61, 33], [217, 66, 40], [191, 71, 46],
@@ -169,10 +190,10 @@ const COLORMAP_BB16 = [
 ];
 
 const COLORMAP_CET16 = [
-    [26, 99, 229],[97, 122, 230],[149, 156, 230],[191, 192, 229],
-    [223, 213, 217], [231, 181, 168],[226, 136, 112],[213, 88, 59],
-    [202, 48, 23],[213, 86, 57],[225, 134, 110],[231, 179, 165],
-    [221, 210, 216],[186, 187, 229],[143, 151, 230],[88, 118, 230],
+    [26, 99, 229], [97, 122, 230], [149, 156, 230], [191, 192, 229],
+    [223, 213, 217], [231, 181, 168], [226, 136, 112], [213, 88, 59],
+    [202, 48, 23], [213, 86, 57], [225, 134, 110], [231, 179, 165],
+    [221, 210, 216], [186, 187, 229], [143, 151, 230], [88, 118, 230],
 ];
 
 const COLORMAP_HSV256 = [

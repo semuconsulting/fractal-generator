@@ -41,13 +41,14 @@ function start() {
         "2-Color",
         "Experimental1",
         "Experimental2",
-    ];
+    ]
+    const STATICTHEMES = 9; // Number of color themes not mapped in colmaps[]
     const PALETTE = [4, 8, 12, 16];
     const LEVELS = [16, 32, 64, 128, 256];
     const INTERPOLATIONS = ["linear"];
     const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
         "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
-        "btnExponent", "btnApply", "btnSettings", "btnSave", "btnHelp"];
+        "btnExponent", "btnApply", "btnSettings", "btnPaint", "btnSave", "btnHelp"];
 
     // Create and size canvas relative to window size.
     var canvasdiv = document.getElementById("canvas");
@@ -85,6 +86,7 @@ function start() {
     var interp = true; // interpolate colors
     var swapaxes = false;
     var colmaps = []; // array of generated colormaps
+    var lastcolmap = THEMES.length; // counter for user-generated color themes
 
     // Initialize the interactive canvas.
     function init() {
@@ -102,16 +104,16 @@ function start() {
         // Populate select inputs
         selectPopulate("modeset", SETMODES);
         selectPopulate("variantset", SETVARS);
-        selectPopulate("expset", [2,3,4,5,6,7,8]);
+        selectPopulate("expset", [2, 3, 4, 5, 6, 7, 8]);
         selectPopulate("themeset", THEMES);
         selectPopulate("paletteset", PALETTE);
         selectPopulate("levelset", LEVELS);
         selectPopulate("interpset", INTERPOLATIONS);
 
         // Generate colormaps
-        colmaps.push(makeColormap(COLORMAP_BB16, 256, 4));
-        colmaps.push(makeColormap(COLORMAP_TROP16, 256, 0));
-        colmaps.push(makeColormap(COLORMAP_CET16, 256, 0));
+        colmaps.push(makeColormap(COLORMAP_BB16, 256, 4)); // [0]
+        colmaps.push(makeColormap(COLORMAP_TROP16, 256, 0)); // [1]
+        colmaps.push(makeColormap(COLORMAP_CET16, 256, 0)); // [2]
 
         // Reset initial settings
         reset();
@@ -227,6 +229,9 @@ function start() {
         var color, h, steps;
         var ni = normalize(scalars, radius, exponent); // normalised iteration count
         switch (theme) {
+            case 0: // Blue brown 16-level cyclic colormap
+                color = getColormap(ni, colmaps[0], shift, interp);
+                break;
             case 1: // Tropical 256-level cyclic colormap
                 color = getColormap(ni, colmaps[1], shift, interp);
                 break;
@@ -271,7 +276,7 @@ function start() {
                 color = getColormap(ni, colmaps[1], shift, interp);
                 break;
             default: // Blue brown 16-level cyclic colormap
-                color = getColormap(ni, colmaps[0], shift, interp);
+                color = getColormap(ni, colmaps[theme - STATICTHEMES], shift, interp);
                 break;
         }
 
@@ -478,6 +483,9 @@ function start() {
             case "btnApply": // apply manual settings
                 doValidateSettings();
                 break;
+            case "btnPaint": // generate color map
+                doPaint();
+                break;
             case "btnSave": {
                 doSave();
                 break;
@@ -551,6 +559,27 @@ function start() {
         document.body.appendChild(tmpLink); // temporarily add link to body and initiate the download
         tmpLink.click();
         document.body.removeChild(tmpLink);
+    }
+
+    // Generate colormap from user-defined palette and add to themes selection.
+    function doPaint() {
+        var i, sel, opt, keys, levels, interp;
+        keys = 8;
+        levels = 256;
+        interp = 0;
+        var colmap = [];
+        for (i = 0; i < keys; i += 1) {
+            sel = document.getElementById("color" + (i + 1));
+            colmap.push(HextoRGB(sel.value));
+        }
+        colmaps.push(makeColormap(colmap, levels, interp));
+        opt = document.createElement("option");
+        opt.value = lastcolmap;
+        opt.innerHTML = "User_" + (lastcolmap - STATICTHEMES);
+        sel = document.getElementById("themeset");
+        sel.appendChild(opt);
+        theme = lastcolmap;
+        lastcolmap += 1;
     }
 
     // Change cursor to indicate in progress.
