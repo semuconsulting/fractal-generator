@@ -42,6 +42,9 @@ function start() {
         "Experimental1",
         "Experimental2",
     ];
+    const PALETTE = [4, 8, 12, 16];
+    const LEVELS = [16, 32, 64, 128, 256];
+    const INTERPOLATIONS = ["linear"];
     const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
         "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
         "btnExponent", "btnApply", "btnSettings", "btnSave", "btnHelp"];
@@ -99,7 +102,11 @@ function start() {
         // Populate select inputs
         selectPopulate("modeset", SETMODES);
         selectPopulate("variantset", SETVARS);
+        selectPopulate("expset", [2,3,4,5,6,7,8]);
         selectPopulate("themeset", THEMES);
+        selectPopulate("paletteset", PALETTE);
+        selectPopulate("levelset", LEVELS);
+        selectPopulate("interpset", INTERPOLATIONS);
 
         // Generate colormaps
         colmaps.push(makeColormap(COLORMAP_BB16, 256, 4));
@@ -451,6 +458,7 @@ function start() {
                 break;
             case "btnSettings": { // show settings panel
                 settings.style.display = settings.style.display === "block" ? "none" : "block";
+                palette.style.display = palette.style.display === "block" ? "none" : "block";
                 if (settings.style.display === "block") {
                     btn.style.backgroundColor = "lightblue";
                 } else {
@@ -580,7 +588,6 @@ function start() {
             elementSet("shiftset", shift);
             elementSet("interpolateset", interp);
             elementSet("swapaxes", swapaxes);
-            elementSet("shiftval", shift);
         }
     }
 

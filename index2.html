@@ -93,210 +93,201 @@
     </div> <!-- /.status -->
     <div id="settings" class="settings font-8 width-80">
       <h3>Settings</h3>
+      <div class="float-left width-wide">
+        <label class="wid2" for="modeset">Mode:</label>
+        <select id="modeset" name="modeset"></select>
+        <label class="padl10" for="variantset">Variant:</label>
+        <select id="variantset" name="variantset"></select>
+        <label class="padl10" for="expset">Exponent:</label>
+        <input type="number" id="expset" name="expset" min="2" max="8"></select><br>
+        <label class="wid2" for="zoffre">c Offset re:</label>
+        <input type="text" id="zoffre" name="zoffre">
+        <label class="wid2" for="zoffim">im:</label>
+        <input type="text" id="zoffim" name="zoffim"><br>
+        <label class="wid2" for="jre">c Julia re:</label>
+        <input type="text" id="jre" name="jre">
+        <label class="wid2" for="jim">im:</label>
+        <input type="text" id="jim" name="jim"><br>
+        <label class="wid2" for="zoomset">Zoom:</label>
+        <input type="text" id="zoomset" name="zoomset">
+        <label class="wid2" for="zoomincset">Zoom Inc:</label>
+        <input type="text" id="zoomincset" name="zoomincset"><br>
+        <label class="wid2" for="rotateset">Rotate:</label>
+        <input type="text" id="rotateset" name="rotateset">
+        <label class="wid2" for="spinincset">Spin Inc:</label>
+        <input type="text" id="spinincset" name="spinincset"><br>
+        <label class="wid2" for="themeset">Color Theme:</label>
+        <select id="themeset" name="themeset"></select>
+        <label class="wid2" for="shiftset">Col Shift:</label>
+        <input class="wid2" id="shiftset" type="range" min=0 max=100 value=0><br>
+        <label class="wid2" for="maxiset">Max Iter:</label>
+        <input type="text" id="maxiset" name="maxiset">
+        <label class="wid2" for="autoiter">Auto Iter:</label>
+        <input type="checkbox" id="autoiter" name="autoiter" value="1"><br>
+        <label class="wid2" for="interpolateset">Interpolate:</label>
+        <input type="checkbox" id="interpolateset" name="interpolateset"><br>
+        <label class="wid2" for="swapaxes">Swap X/Y:</label>
+        <input type="checkbox" id="swapaxes" name="swapaxes">
+      </div>
+      <div class="float-right width-small">
+        <button id="btnApply">APPLY</button>
+      </div>
+    </div>
+  </div> <!-- ./settings -->
+  <div id="palette" class="palette">
+    <h3>Custom Color Palette</h3>
+    <div class="float-left width-wide">
+      <label class="wid2" for="paletteset">No. Keys:</label>
+      <select id="paletteset" name="paletteset"></select>
+      <label class="wid2" for="levelset">No. Levels:</label>
+      <select id="levelset" name="levelset"></select>
+      <label class="wid2" for="interpset">Interpolation:</label>
+      <select id="interpset" name="interpset"></select>
+      <p></p>
       <table>
         <tr>
-          <td><label class="wid2" for="zoffre">c Offset re:</label></td>
-          <td><input type="text" id="zoffre" name="zoffre"></td>
-          <td><label class="wid2" for="zoffim">im:</label></td>
-          <td><input type="text" id="zoffim" name="zoffim"> i</td>
+          <td><input type="color" id="color01" value="#222222"></td>
+          <td><input type="color" id="color02" value="#222222"></td>
+          <td><input type="color" id="color03" value="#222222"></td>
+          <td><input type="color" id="color04" value="#222222"></td>
+          <td><input type="color" id="color05" value="#222222"></td>
+          <td><input type="color" id="color06" value="#222222"></td>
+          <td><input type="color" id="color07" value="#222222"></td>
+          <td><input type="color" id="color08" value="#222222"></td>
         </tr>
         <tr>
-          <td><label class="wid2" for="jre">c Julia re:</label></td>
-          <td><input type="text" id="jre" name="jre"></td>
-          <td><label class="wid2" for="jim">im:</label></td>
-          <td><input type="text" id="jim" name="jim"> i</td>
-        </tr>
-        <tr>
-          <td><label class="wid2" for="maxiset">Max Iter:</label></td>
-          <td><input type="text" id="maxiset" name="maxiset"></td>
-          <td><label class="wid2" for="autoiter">Auto Iter:</label></td>
-          <td><input type="checkbox" id="autoiter" name="autoiter" value="1"></td>
-        </tr>
-        <tr>
-          <td><label class="wid2" for="zoomset">Zoom:</label></td>
-          <td><input type="text" id="zoomset" name="zoomset"></td>
-          <td><label class="wid2" for="zoomincset">Zoom Inc:</label></td>
-          <td><input type="text" id="zoomincset" name="zoomincset"></td>
-        </tr>
-        <tr>
-          <td><label class="wid2" for="rotateset">Rotate:</label></td>
-          <td><input type="text" id="rotateset" name="rotateset"></td>
-          <td><label class="wid2" for="spinincset">Spin Inc:</label></td>
-          <td><input type="text" id="spinincset" name="spinincset"></td>
-        </tr>
-        <tr>
-          <td><label class="wid2" for="modeset">Mode:</label></td>
-          <td><select id="modeset" name="modeset">
-            </select></td>
-          <td><label class="wid2" for="variantset">Variant:</label></td>
-          <td><select id="variantset" name="variantset">
-            </select></td>
-        </tr>
-        <tr>
-          <td><label class="wid2" for="expset">Exponent:</label></td>
-          <td><input type="text" id="expset" name="expset"></td>
-        </tr>
-        <tr>
-          <td><label class="wid2" for="themeset">Color Theme:</label></td>
-          <td><select id="themeset" name="themeset"></select></td>
-          <td><label class="wid2" for="shiftset">Shift:</label></td>
-          <td colspan=2><input class="wid2" id="shiftset" type="range" min=0 max=100 value=0></td>
-          <td><span class="text-left" id="shiftval">0</span></td>
-        </tr>
-        <tr>
-          <td><label class="wid2" for="interpolateset">Interpolate:</label></td>
-          <td><input type="checkbox" id="interpolateset" name="interpolateset"></td>
-          <td><label class="wid2" for="swapaxes">Swap X/Y:</label></td>
-          <td><input type="checkbox" id="swapaxes" name="swapaxes"></td>
-        </tr>
-        <tr>
-          <td colspan=5></td>
-          <td><button id="btnApply">APPLY</button></td>
+          <td><input type="color" id="color09" value="#222222"></td>
+          <td><input type="color" id="color10" value="#222222"></td>
+          <td><input type="color" id="color11" value="#222222"></td>
+          <td><input type="color" id="color12" value="#222222"></td>
+          <td><input type="color" id="color13" value="#222222"></td>
+          <td><input type="color" id="color14" value="#222222"></td>
+          <td><input type="color" id="color15" value="#222222"></td>
+          <td><input type="color" id="color16" value="#222222"></td>
         </tr>
       </table>
-      <div id="palette" class="palette">
-        <h3>Custom Color Palette</h3>
-        <table>
-          <tr>
-            <td><input type="color" id="color01" value="#222222"></td>
-            <td><input type="color" id="color02" value="#222222"></td>
-            <td><input type="color" id="color03" value="#222222"></td>
-            <td><input type="color" id="color04" value="#222222"></td>
-            <td><input type="color" id="color05" value="#222222"></td>
-            <td><input type="color" id="color06" value="#222222"></td>
-            <td><input type="color" id="color07" value="#222222"></td>
-            <td><input type="color" id="color08" value="#222222"></td>
-          </tr>
-          <tr>
-            <td><input type="color" id="color09" value="#222222"></td>
-            <td><input type="color" id="color10" value="#222222"></td>
-            <td><input type="color" id="color11" value="#222222"></td>
-            <td><input type="color" id="color12" value="#222222"></td>
-            <td><input type="color" id="color13" value="#222222"></td>
-            <td><input type="color" id="color14" value="#222222"></td>
-            <td><input type="color" id="color15" value="#222222"></td>
-            <td><input type="color" id="color16" value="#222222"></td>
-          </tr>
-        </table>
-      </div> <!-- ./palette -->
-    </div> <!-- ./settings -->
-    <div id="help" class="help font-8 width-80">
-      <h3>How to use Fractal Generator</h3>
-      <table>
-        <tr>
-          <td class="instruct" colspan=2>Click anywhere in the image to zoom in at the current cursor position by the
-            zoom
-            increment amount.</td>
-        </tr>
-        <tr>
-          <td class="instruct" colspan=2>Click, drag and release to zoom into drawn area.</td>
-        </tr>
-        <tr>
-          <td class="instruct" colspan=2>Ctrl + Click to zoom out at current cursor position by zoom increment amount.
-          </td>
-        </tr>
-        <tr>
-          <td class="instruct" colspan=2>Shift + Click to centre at current cursor position.</td>
-        </tr>
-        <tr>
-          <td class="instruct" colspan=2>Alt(Option) + Click to toggle between Mandelbrot and Julia modes at current
-            cursor position (useful points of interest can be found just outside the perimeter of the Mandelbrot set).
-          </td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnReset.png" /></td>
-          <td>Reset to default settings.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnZoomIn.png" /></td>
-          <td>Zoom in.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnZoomOut.png" /></td>
-          <td>Zoom out.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnZoomAnimate.png" /></td>
-          <td>Turn zoom animation on/off.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnMode.png" /></td>
-          <td>Cycle modes (Mandelbrot, Julia).</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnVariant.png" /></td>
-          <td>Cycle variants (Standard, Burning Ship, Tricorn).</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnExponent.png" /></td>
-          <td>Cycle exponent (integer 2-6).</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnColor.png" /></td>
-          <td>Cycle colot theme.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnColorUp.png" /></td>
-          <td>Shift color theme up.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnColorDown.png" /></td>
-          <td>Shift color theme down.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnJuliaDown.png" /></td>
-          <td>Rotate Julia set clockwise.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnJuliaUp.png" /></td>
-          <td>Julia set anti-clockwise.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnJuliaSpin.png" /></td>
-          <td>Turn Julia spin animation on/off.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnSave.png" /></td>
-          <td>Save current image.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnSettings.png" /></td>
-          <td>Open/close settings panel.</td>
-        </tr>
-        <tr>
-          <td><img class="icon" src="./resources/btnHelp.png" /></td>
-          <td>Open/close help panel.</td>
-        </tr>
-      </table>
-      <div id="navigation">
-        <h3>Navigating Mandelbrot and Julia Sets</h3>
-        <p>The Mandelbrot set can be considered a map to an infinite number of Julia sets. Pressing
-          Alt(Option) + Click or <img class="icon_small" src="./resources/btnMode.png" /> at various points around the
-          Mandelbrot set (or its variants) produces a variety of
-          Julia sets. The most interesting images can be found just outside the perimeter of the Mandelbrot set.</p>
-        <div class="text-center">
-          <span><img id="mapofjulias" src="./resources/mandelbrot_julia_600px.png" /></span>
-        </div>
-        <p>Mandelbrot variants like the so-called 'Burning Ship' can map to extraordinarily beautiful Julia sets.</p>
-        <div class="text-center">
-          <span><img id="burningship" src="./resources/burningship_600px.png" /></span>
-        </div>
-        <p>Julia sets can be 'rotated' about their origin by applying a polar rotation transformation to the
-          complex coordinate c in the equation z = zⁿ + c. By successively incrementing the rotation angle by pressing
-          the <img class="icon_small" src="./resources/btnJuliaSpin.png" /> button, a 'spinning Julia' animation can be
-          produced.
-          The frame rate or speed of rotation is governed by the 'Spin Inc' setting; smaller values produce slower and
-          more intricate rotations.
-        </p>
-        <div class="text-center">
-          <span><img id="juliaspin" src="./resources/juliaspin.gif" /></span>
-        </div>
-      </div> <!-- /.navigation -->
-      <p>
-        © Algol Variables 2021. Information and source code on
-        <a href="https://github.com/Algol-Variables/fractal-generator">GitHub.</a>
+    </div>
+    <div class="float-right width-small">
+      <button id="btnPaint">PAINT</button>
+    </div>
+  </div> <!-- ./palette -->
+  <div id="help" class="help font-8 width-80">
+    <h3>How to use Fractal Generator</h3>
+    <table>
+      <tr>
+        <td class="instruct" colspan=2>Click anywhere in the image to zoom in at the current cursor position by the
+          zoom
+          increment amount.</td>
+      </tr>
+      <tr>
+        <td class="instruct" colspan=2>Click, drag and release to zoom into drawn area.</td>
+      </tr>
+      <tr>
+        <td class="instruct" colspan=2>Ctrl + Click to zoom out at current cursor position by zoom increment amount.
+        </td>
+      </tr>
+      <tr>
+        <td class="instruct" colspan=2>Shift + Click to centre at current cursor position.</td>
+      </tr>
+      <tr>
+        <td class="instruct" colspan=2>Alt(Option) + Click to toggle between Mandelbrot and Julia modes at current
+          cursor position (useful points of interest can be found just outside the perimeter of the Mandelbrot set).
+        </td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnReset.png" /></td>
+        <td>Reset to default settings.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnZoomIn.png" /></td>
+        <td>Zoom in.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnZoomOut.png" /></td>
+        <td>Zoom out.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnZoomAnimate.png" /></td>
+        <td>Turn zoom animation on/off.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnMode.png" /></td>
+        <td>Cycle modes (Mandelbrot, Julia).</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnVariant.png" /></td>
+        <td>Cycle variants (Standard, Burning Ship, Tricorn).</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnExponent.png" /></td>
+        <td>Cycle exponent (integer 2-6).</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnColor.png" /></td>
+        <td>Cycle colot theme.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnColorUp.png" /></td>
+        <td>Shift color theme up.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnColorDown.png" /></td>
+        <td>Shift color theme down.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnJuliaDown.png" /></td>
+        <td>Rotate Julia set clockwise.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnJuliaUp.png" /></td>
+        <td>Julia set anti-clockwise.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnJuliaSpin.png" /></td>
+        <td>Turn Julia spin animation on/off.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnSave.png" /></td>
+        <td>Save current image.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnSettings.png" /></td>
+        <td>Open/close settings panel.</td>
+      </tr>
+      <tr>
+        <td><img class="icon" src="./resources/btnHelp.png" /></td>
+        <td>Open/close help panel.</td>
+      </tr>
+    </table>
+    <div id="navigation">
+      <h3>Navigating Mandelbrot and Julia Sets</h3>
+      <p>The Mandelbrot set can be considered a map to an infinite number of Julia sets. Pressing
+        Alt(Option) + Click or <img class="icon_small" src="./resources/btnMode.png" /> at various points around the
+        Mandelbrot set (or its variants) produces a variety of
+        Julia sets. The most interesting images can be found just outside the perimeter of the Mandelbrot set.</p>
+      <div class="text-center">
+        <span><img id="mapofjulias" src="./resources/mandelbrot_julia_600px.png" /></span>
+      </div>
+      <p>Mandelbrot variants like the so-called 'Burning Ship' can map to extraordinarily beautiful Julia sets.</p>
+      <div class="text-center">
+        <span><img id="burningship" src="./resources/burningship_600px.png" /></span>
+      </div>
+      <p>Julia sets can be 'rotated' about their origin by applying a polar rotation transformation to the
+        complex coordinate c in the equation z = zⁿ + c. By successively incrementing the rotation angle by pressing
+        the <img class="icon_small" src="./resources/btnJuliaSpin.png" /> button, a 'spinning Julia' animation can be
+        produced.
+        The frame rate or speed of rotation is governed by the 'Spin Inc' setting; smaller values produce slower and
+        more intricate rotations.
       </p>
-    </div> <!-- /.help -->
+      <div class="text-center">
+        <span><img id="juliaspin" src="./resources/juliaspin.gif" /></span>
+      </div>
+    </div> <!-- /.navigation -->
+    <p>
+      © Algol Variables 2021. Information and source code on
+      <a href="https://github.com/Algol-Variables/fractal-generator">GitHub.</a>
+    </p>
+  </div> <!-- /.help -->
   </div> <!-- /.main-container -->
 </body>
 <script src="./complexlite.js"></script>
