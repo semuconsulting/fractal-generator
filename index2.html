@@ -124,8 +124,8 @@
         <input type="text" id="maxiset" name="maxiset">
         <label class="wid2" for="autoiter">Auto Iter:</label>
         <input type="checkbox" id="autoiter" name="autoiter" value="1"><br>
-        <label class="wid2" for="interpolateset">Interpolate:</label>
-        <input type="checkbox" id="interpolateset" name="interpolateset"><br>
+        <label class="wid2" for="interpolateset">Interpolation:</label>
+        <select id="interpolateset" name="interpolateset"></select><br>
         <label class="wid2" for="swapaxes">Swap X/Y:</label>
         <input type="checkbox" id="swapaxes" name="swapaxes">
       </div>
@@ -144,22 +144,26 @@
       <label class="wid2" for="interpset">Interpolation:</label>
       <select id="interpset" name="interpset"></select>
       <p></p>
-      <input type="color" id="color1" value="#222222">
-      <input type="color" id="color2" value="#222222">
-      <input type="color" id="color3" value="#222222">
-      <input type="color" id="color4" value="#222222">
-      <input type="color" id="color5" value="#222222">
-      <input type="color" id="color6" value="#222222">
-      <input type="color" id="color7" value="#222222">
-      <input type="color" id="color8" value="#222222"><br>
-      <input type="color" id="color9" value="#222222">
-      <input type="color" id="color10" value="#222222">
-      <input type="color" id="color11" value="#222222">
-      <input type="color" id="color12" value="#222222">
-      <input type="color" id="color13" value="#222222">
-      <input type="color" id="color14" value="#222222">
-      <input type="color" id="color15" value="#222222">
-      <input type="color" id="color16" value="#222222">
+      <label class="wid2" for="colorpicker">Color Picker:</label>
+      <input type="color" id="colorpicker" value="#555555">
+      <span>Click palettes below to set color from picker.</span><p></p>
+      <input type="text" id="color1" class="colpal">
+      <input type="text" id="color2" class="colpal">
+      <input type="text" id="color3" class="colpal">
+      <input type="text" id="color4" class="colpal">
+      <input type="text" id="color5" class="colpal">
+      <input type="text" id="color6" class="colpal">
+      <input type="text" id="color7" class="colpal">
+      <input type="text" id="color8" class="colpal">
+      <br>
+      <input type="text" id="color9" class="colpal">
+      <input type="text" id="color10" class="colpal">
+      <input type="text" id="color11" class="colpal">
+      <input type="text" id="color12" class="colpal">
+      <input type="text" id="color13" class="colpal">
+      <input type="text" id="color14" class="colpal">
+      <input type="text" id="color15" class="colpal">
+      <input type="text" id="color16" class="colpal">
     </div>
     <div class="float-right width-small">
       <button id="btnPaint">PAINT</button>

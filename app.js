@@ -45,7 +45,7 @@ function start() {
     const STATICTHEMES = 9; // Number of color themes not mapped in colmaps[]
     const PALETTE = [4, 8, 12, 16];
     const LEVELS = [16, 32, 64, 128, 256];
-    const INTERPOLATIONS = ["linear"];
+    const INTERPOLATIONS = ["none", "linear"];
     const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
         "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
         "btnExponent", "btnApply", "btnSettings", "btnPaint", "btnSave", "btnHelp"];
@@ -83,22 +83,30 @@ function start() {
     var zooming = false;
     var angle = 0; // Current Julia rotation angle
     var spininc = 1; // Julia rotate/spin increment in degrees
-    var interp = true; // interpolate colors
-    var swapaxes = false;
-    var colmaps = []; // array of generated colormaps
-    var lastcolmap = THEMES.length; // counter for user-generated color themes
+    var interp = 1; // Linear color interpolation
+    var pickinterp = 1; // Linear color interpolation
+    var pickpalette = 3; // Default palette depth = 16
+    var picklevels = 4; // Default colormap depth = 256
+    var swapaxes = false; // Transpose X/Y axes
+    var colmaps = []; // Array of generated colormaps
+    var lastcolmap = THEMES.length; // Counter for user-generated color themes
 
     // Initialize the interactive canvas.
     function init() {
 
+        var i, x;
         // Add mouse events
         canvas.addEventListener("mousedown", onMouseDown);
         canvas.addEventListener("mousemove", onMouseMove);
         canvas.addEventListener("mouseup", onMouseUp);
 
         // Add button event handlers
-        for (let i in BUTTONS) {
+        for (i in BUTTONS) {
             document.getElementById(BUTTONS[i]).addEventListener("click", onButtonClick);
+        }
+        for (i = 0; i < 16; i += 1) {
+            x = "color" + (i + 1);
+            document.getElementById(x).addEventListener("click", onPaletteClick);
         }
 
         // Populate select inputs
@@ -108,6 +116,7 @@ function start() {
         selectPopulate("themeset", THEMES);
         selectPopulate("paletteset", PALETTE);
         selectPopulate("levelset", LEVELS);
+        selectPopulate("interpolateset", INTERPOLATIONS);
         selectPopulate("interpset", INTERPOLATIONS);
 
         // Generate colormaps
@@ -179,9 +188,12 @@ function start() {
         spinning = false;
         zooming = false;
         spininc = 1;
-        interp = true;
+        interp = 1;
         swapaxes = false;
         angle = 0;
+        pickinterp = 1; // linear
+        pickpalette = 3; // 16
+        picklevels = 4; // 256
         updateInfo();
     }
 
@@ -466,6 +478,7 @@ function start() {
                 palette.style.display = palette.style.display === "block" ? "none" : "block";
                 if (settings.style.display === "block") {
                     btn.style.backgroundColor = "lightblue";
+                    // setPaint(); TODO
                 } else {
                     btn.style.backgroundColor = "white";
                 }
@@ -517,7 +530,7 @@ function start() {
         setmode = document.getElementById("modeset").selectedIndex;
         setvar = document.getElementById("variantset").selectedIndex;
         theme = document.getElementById("themeset").selectedIndex;
-        interp = document.getElementById("interpolateset").checked;
+        interp = document.getElementById("interpolateset").selectedIndex;
         swapaxes = document.getElementById("swapaxes").checked;
 
         if (!isNaN(inzoffre) && !isNaN(inzoffim)) {
@@ -561,14 +574,42 @@ function start() {
         document.body.removeChild(tmpLink);
     }
 
+    // Color palette click handler.
+    function onPaletteClick(e) {
+        var col = document.getElementById("colorpicker").value;
+        var pal = document.getElementById(e.target.id);
+        pal.value = col;
+        pal.style.backgroundColor = col;
+    }
+
+    // TODO Populate palette from selected color theme.
+    function setPaint() {
+        console.log("doing setPaint");
+        var i, idx, col, coln, pal;
+        if (theme < 3) {
+            idx = theme;
+        }
+        else if (theme > 11) { // User generated themes
+            idx = theme - STATICTHEMES;
+        }
+        else return;
+        for (i = 0; i < colmaps[idx].length; i += 1) {
+            col = colmaps[idx][i];
+            console.log(i, theme, idx, col)
+            coln = RGBtoHex(col[0],col[1],col[2]);
+            pal = document.getElementById("color" + (i + 1));
+            pal.style.backgroundColor = coln;
+        }
+    }
+
     // Generate colormap from user-defined palette and add to themes selection.
     function doPaint() {
-        var i, sel, opt, keys, levels, interp;
-        keys = 8;
-        levels = 256;
-        interp = 0;
+        var i, sel, opt, palette, levels, interp;
+        palette = PALETTE[document.getElementById("paletteset").selectedIndex];
+        levels = LEVELS[document.getElementById("levelset").selectedIndex];
+        interp = document.getElementById("interpset").selectedIndex;
         var colmap = [];
-        for (i = 0; i < keys; i += 1) {
+        for (i = 0; i < palette; i += 1) {
             sel = document.getElementById("color" + (i + 1));
             colmap.push(HextoRGB(sel.value));
         }
@@ -617,6 +658,9 @@ function start() {
             elementSet("shiftset", shift);
             elementSet("interpolateset", interp);
             elementSet("swapaxes", swapaxes);
+            elementSet("paletteset", pickpalette);
+            elementSet("levelset", picklevels);
+            elementSet("interpset", pickinterp);
         }
     }
 

@@ -50,11 +50,11 @@ div.settings, div.help, div.palette {
 }
 
 div.settings {
-    height: 280px;
+    height: 275px;
 }
 
 div.palette {
-    height: 160px;
+    height: 173px;
 }
 
 header {
@@ -94,8 +94,14 @@ label.wid1 {
     width: 20px;
 }
 
+input.colpal {
+    width: 48px;
+    font-size: 0.8em;
+}
+
 input#expset {
     width: 35px;
+    font-size: 0.8em;
 }
 input#zoomincset, input#spinincset, input#maxiset {
     width: 50px;
