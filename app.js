@@ -37,8 +37,8 @@ const THEMES = [ // Remember to update if you add more themes
     "2-Color",
 ]
 const STATICTHEMES = THEMES.length - 3; // Number of color themes not mapped in gradients[]
-const PALETTE = [4, 8, 12, 16];
-const LEVELS = [16, 32, 64, 128, 256];
+const PDEPTHS = [4, 8, 12, 16]; // Selectable palette color depths
+const GDEPTHS = [16, 32, 64, 128, 256]; // Selectable gradient color depths
 const INTERPOLATIONS = ["none", "linear"];
 const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
     "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
@@ -112,8 +112,8 @@ function start() {
         selectPopulate("selvariant", SETVARS);
         selectPopulate("inpexp", [2, 3, 4, 5, 6, 7, 8]);
         selectPopulate("seltheme", THEMES);
-        selectPopulate("selpdepth", PALETTE);
-        selectPopulate("selgdepth", LEVELS);
+        selectPopulate("selpdepth", PDEPTHS);
+        selectPopulate("selgdepth", GDEPTHS);
         selectPopulate("selinterpolate", INTERPOLATIONS);
         selectPopulate("selinterp", INTERPOLATIONS);
 
@@ -578,7 +578,7 @@ function start() {
     // Populate palette from selected color gradient theme.
     function setPalette() {
         var i, idx, col, coln, inppal;
-        if (theme < 3) { // Fixed gradient themes
+        if (theme < 3) { // First 3 are predefined gradient themes
             idx = theme;
         }
         else if (theme > THEMES.length - 1) { // User generated themes
@@ -604,10 +604,10 @@ function start() {
     // Generate color gradient from user-defined palette and add to themes selection.
     function doGradient() {
         var i, sel, opt, pdepth, gdepth, interp;
-        pdepth = PALETTE[document.getElementById("selpdepth").selectedIndex];
-        gdepth = LEVELS[document.getElementById("selgdepth").selectedIndex];
-        interp = document.getElementById("selinterp").selectedIndex;
         var gradient = [];
+        pdepth = PDEPTHS[document.getElementById("selpdepth").selectedIndex];
+        gdepth = GDEPTHS[document.getElementById("selgdepth").selectedIndex];
+        interp = document.getElementById("selinterp").selectedIndex;
         for (i = 0; i < pdepth; i += 1) {
             sel = document.getElementById("color" + (i + 1));
             gradient.push(HextoRGB(sel.value));
