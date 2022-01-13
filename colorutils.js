@@ -1,6 +1,6 @@
 // ------------------------------------------------------------------------
-// Utility library defining color rendering functions and
-// cyclic colormaps for fractal generator.
+// Utility library defining various color rendering and manipulation
+// functions and predefined color gradient palettes for fractal generator.
 //
 // Copyright (c) 2021 Algol Variables
 // ------------------------------------------------------------------------
@@ -103,29 +103,29 @@ function getColormap(ni, colmap, shift, interp) {
 // @param {object} palette - palette of RGB colors [[r,g,b],[r,g,b],...]
 // @param {number} levels - number of levels in colormap e.g. 256
 // @param {number} shift - shift colormap index
-// @return {object} - RGB color map [[r,g,b],[r,g,b],...]
+// @return {object} - RGB color gradient [[r,g,b],[r,g,b],...]
 //
-function makeColormap(palette, levels, shift) {
+function makeGradient(palette, levels, shift) {
 
-    var i, cidx, col, col1, col2;
-    var clen = palette.length;
-    var f = clen / levels;
-    var cmap = [];
+    var i, pidx, col, col1, col2;
+    var plen = palette.length;
+    var f = plen / levels;
+    var gradient = [];
     var fi = 0;
-    if (clen >= levels) {
+    if (plen >= levels) {
         return palette;
     }
     for (i = 0; i < levels; i += 1) {
-        cidx = Math.floor(i / clen + shift);
-        col = palette[cidx % clen];
+        pidx = Math.floor(i / plen + shift);
+        col = palette[pidx % plen];
         col1 = { r: col[0], g: col[1], b: col[2] }
-        col = palette[(cidx + 1) % clen];
+        col = palette[(pidx + 1) % plen];
         col2 = { r: col[0], g: col[1], b: col[2] }
         col = interpolate(col1, col2, fi);
-        cmap.push([col.r, col.g, col.b])
+        gradient.push([col.r, col.g, col.b])
         fi = (fi + f) % 1;
     }
-    return cmap;
+    return gradient;
 }
 
 // Convert integer to hex string.
@@ -175,6 +175,23 @@ function RGBtoHex(r, g, b) {
     return "#" + valtoHex(r) + valtoHex(g) + valtoHex(b);
 }
 
+// Find best contrasting color against background
+// using perceived luminance (human eye favors green color). 
+//
+// @param {number} r - background red value
+// @param {number} g - background green value
+// @param {number} b - background blue value
+// @return {string} - hex color string '#000000 or '#ffffff'
+//
+function findContrast(r, g, b) {
+    var col = "#ffffff";
+    var luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    if (luminance > 0.5) {
+        col = "#000000";
+    }
+    return col;
+}
+
 const COLORMAP_BB16 = [
     [66, 30, 15], [25, 7, 26], [9, 1, 47], [4, 4, 73],
     [0, 7, 100], [12, 44, 138], [24, 82, 177], [57, 125, 209],
@@ -195,9 +212,6 @@ const COLORMAP_CET16 = [
     [202, 48, 23], [213, 86, 57], [225, 134, 110], [231, 179, 165],
     [221, 210, 216], [186, 187, 229], [143, 151, 230], [88, 118, 230],
 ];
-
-// Array of palettes used to generate colormaps (gradients)
-var palettes = [COLORMAP_BB16, COLORMAP_TROP16, COLORMAP_CET16]
 
 const COLORMAP_HSV256 = [
     [226, 56, 41],

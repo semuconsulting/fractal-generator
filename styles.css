@@ -86,6 +86,10 @@ label.padl10 {
     padding-left: 10px;
 }
 
+label.wid3 {
+    width: 95px;
+}
+
 label.wid2 {
     width: 85px;
 }
@@ -97,13 +101,14 @@ label.wid1 {
 input.colpal {
     width: 48px;
     font-size: 0.8em;
+    color: white;
 }
 
-input#expset {
+input#inpexp {
     width: 35px;
     font-size: 0.8em;
 }
-input#zoomincset, input#spinincset, input#maxiset {
+input#inpzoominc, input#inpspininc, input#inpmaxiter {
     width: 50px;
 }
 

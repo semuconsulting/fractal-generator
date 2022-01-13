@@ -94,40 +94,40 @@
     <div id="settings" class="settings font-8 width-80">
       <h3>Settings</h3>
       <div class="float-left width-wide">
-        <label class="wid2" for="modeset">Mode:</label>
-        <select id="modeset" name="modeset"></select>
-        <label class="padl10" for="variantset">Variant:</label>
-        <select id="variantset" name="variantset"></select>
-        <label class="padl10" for="expset">Exponent:</label>
-        <input type="number" id="expset" name="expset" min="2" max="8"></select><br>
-        <label class="wid2" for="zoffre">c Offset re:</label>
-        <input type="text" id="zoffre" name="zoffre">
-        <label class="wid2" for="zoffim">im:</label>
-        <input type="text" id="zoffim" name="zoffim"><br>
-        <label class="wid2" for="jre">c Julia re:</label>
-        <input type="text" id="jre" name="jre">
-        <label class="wid2" for="jim">im:</label>
-        <input type="text" id="jim" name="jim"><br>
-        <label class="wid2" for="zoomset">Zoom:</label>
-        <input type="text" id="zoomset" name="zoomset">
-        <label class="wid2" for="zoomincset">Zoom Inc:</label>
-        <input type="text" id="zoomincset" name="zoomincset"><br>
-        <label class="wid2" for="rotateset">Rotate:</label>
-        <input type="text" id="rotateset" name="rotateset">
-        <label class="wid2" for="spinincset">Spin Inc:</label>
-        <input type="text" id="spinincset" name="spinincset"><br>
-        <label class="wid2" for="themeset">Color Theme:</label>
-        <select id="themeset" name="themeset"></select>
-        <label class="wid2" for="shiftset">Col Shift:</label>
-        <input class="wid2" id="shiftset" type="range" min=0 max=100 value=0><br>
-        <label class="wid2" for="maxiset">Max Iter:</label>
-        <input type="text" id="maxiset" name="maxiset">
-        <label class="wid2" for="autoiter">Auto Iter:</label>
-        <input type="checkbox" id="autoiter" name="autoiter" value="1"><br>
-        <label class="wid2" for="interpolateset">Interpolation:</label>
-        <select id="interpolateset" name="interpolateset"></select><br>
-        <label class="wid2" for="swapaxes">Swap X/Y:</label>
-        <input type="checkbox" id="swapaxes" name="swapaxes">
+        <label class="wid2" for="selmode">Mode:</label>
+        <select id="selmode" name="selmode"></select>
+        <label class="padl10" for="selvariant">Variant:</label>
+        <select id="selvariant" name="selvariant"></select>
+        <label class="padl10" for="inpexp">Exponent:</label>
+        <input type="number" id="inpexp" name="inpexp" min="2" max="8"></select><br>
+        <label class="wid2" for="inpcoffre">c Offset re:</label>
+        <input type="text" id="inpcoffre" name="inpcoffre">
+        <label class="wid2" for="inpcoffim">im:</label>
+        <input type="text" id="inpcoffim" name="inpcoffim"><br>
+        <label class="wid2" for="inpcjulre">c Julia re:</label>
+        <input type="text" id="inpcjulre" name="inpcjulre">
+        <label class="wid2" for="inpcjulim">im:</label>
+        <input type="text" id="inpcjulim" name="inpcjulim"><br>
+        <label class="wid2" for="inpzoom">Zoom:</label>
+        <input type="text" id="inpzoom" name="inpzoom">
+        <label class="wid2" for="inpzoominc">Zoom Inc:</label>
+        <input type="text" id="inpzoominc" name="inpzoominc"><br>
+        <label class="wid2" for="inpangle">Rotate:</label>
+        <input type="text" id="inpangle" name="inpangle">
+        <label class="wid2" for="inpspininc">Spin Inc:</label>
+        <input type="text" id="inpspininc" name="inpspininc"><br>
+        <label class="wid2" for="seltheme">Color Theme:</label>
+        <select id="seltheme" name="seltheme"></select>
+        <label class="wid2" for="inpshift">Col Shift:</label>
+        <input class="wid2" id="inpshift" type="range" min=0 max=100 value=0><br>
+        <label class="wid2" for="inpmaxiter">Max Iter:</label>
+        <input type="text" id="inpmaxiter" name="inpmaxiter">
+        <label class="wid2" for="chkautoiter">Auto Iter:</label>
+        <input type="checkbox" id="chkautoiter" name="chkautoiter" value="1"><br>
+        <label class="wid2" for="selinterpolate">Interpolation:</label>
+        <select id="selinterpolate" name="selinterpolate"></select><br>
+        <label class="wid2" for="chkswapaxes">Swap X/Y:</label>
+        <input type="checkbox" id="chkswapaxes" name="chkswapaxes">
       </div>
       <div class="float-right width-small">
         <button id="btnApply">APPLY</button>
@@ -135,14 +135,14 @@
     </div>
   </div> <!-- ./settings -->
   <div id="palette" class="palette">
-    <h3>Custom Color Palette</h3>
+    <h3>Generate Custom Color Gradient from Palette</h3>
     <div class="float-left width-wide">
-      <label class="wid2" for="paletteset">No. Keys:</label>
-      <select id="paletteset" name="paletteset"></select>
-      <label class="wid2" for="levelset">No. Levels:</label>
-      <select id="levelset" name="levelset"></select>
-      <label class="wid2" for="interpset">Interpolation:</label>
-      <select id="interpset" name="interpset"></select>
+      <label class="wid2" for="selpdepth">Palette Depth:</label>
+      <select id="selpdepth" name="selpdepth"></select>
+      <label class="wid3" for="selgdepth">Gradient Depth:</label>
+      <select id="selgdepth" name="selgdepth"></select>
+      <label class="wid2" for="selinterp">Interpolation:</label>
+      <select id="selinterp" name="selinterp"></select>
       <p></p>
       <label class="wid2" for="colorpicker">Color Picker:</label>
       <input type="color" id="colorpicker" value="#555555">

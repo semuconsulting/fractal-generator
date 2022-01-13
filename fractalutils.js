@@ -145,14 +145,14 @@ function normalize(scalars, radius, exponent) {
 
 // Arbitrary algorithm to derive 'optimal' max iterations for a given
 // zoom level, enhancing legibility at higher magnifications.
-// Can be overridden by setting autoiter to False - often worth experimenting
+// Can be overridden by setting chkautoiter to False - often worth experimenting
 // for best cosmetic results.
 //
 // @param {number} zoom - zoom level
 // @param {number} mode - 0 = Mandelbrot, 1 = Julia
 // @return {number} - calculated maximum iteration count
 //
-function getAutoiter(zoom, mode) {
+function getchkautoiter(zoom, mode) {
     var miniter = mode === JULIA ? MINITERJ : MINITERM;
     return Math.max(miniter, parseInt(Math.abs(500 * Math.log(1 / Math.sqrt(zoom)))));
 }

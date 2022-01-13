@@ -15,38 +15,37 @@
 
 const ASPECT_RATIO = 1.5; // aspect ratio 4:3
 const CANVAS_INSET = 0.8; // image inset relative to document
+const SETMODES = [
+    "Mandelbrot",
+    "Julia",
+]
+const SETVARS = [
+    "Standard",
+    "Burning Ship",
+    "Tricorn",
+]
+const THEMES = [ // Remember to update if you add more themes
+    "Blue/Brown Cyclic 256",
+    "Tropical Cyclic 256",
+    "CET4s Cyclic 256",
+    "Rainbow Cyclic 256",
+    "Basic Hue",
+    "Normalized Hue",
+    "Sqrt Maxiter Hue",
+    "Sin Sqrt Maxiter Hue",
+    "Grayscale",
+    "2-Color",
+]
+const STATICTHEMES = THEMES.length - 3; // Number of color themes not mapped in gradients[]
+const PALETTE = [4, 8, 12, 16];
+const LEVELS = [16, 32, 64, 128, 256];
+const INTERPOLATIONS = ["none", "linear"];
+const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
+    "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
+    "btnExponent", "btnApply", "btnSettings", "btnPaint", "btnSave", "btnHelp"];
 
 // Main interactive fractal routine
 function start() {
-
-    const SETMODES = [
-        "Mandelbrot",
-        "Julia",
-    ]
-    const SETVARS = [
-        "Standard",
-        "Burning Ship",
-        "Tricorn",
-    ]
-    const THEMES = [ // Remember to update if you add more themes
-        "Blue/Brown Cyclic 256",
-        "Tropical Cyclic 256",
-        "CET4s Cyclic 256",
-        "Rainbow Cyclic 256",
-        "Basic Hue",
-        "Normalized Hue",
-        "Sqrt Maxiter Hue",
-        "Sin Sqrt Maxiter Hue",
-        "Grayscale",
-        "2-Color",
-    ]
-    const STATICTHEMES = THEMES.length - 3; // Number of color themes not mapped in colmaps[]
-    const PALETTE = [4, 8, 12, 16];
-    const LEVELS = [16, 32, 64, 128, 256];
-    const INTERPOLATIONS = ["none", "linear"];
-    const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
-        "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
-        "btnExponent", "btnApply", "btnSettings", "btnPaint", "btnSave", "btnHelp"];
 
     // Create and size canvas relative to window size.
     var canvasdiv = document.getElementById("canvas");
@@ -69,8 +68,8 @@ function start() {
     var zoom;
     var maxiter;
     var exponent = 2;
-    var radius = 1 << 8; // Bailout radius
-    var autoiter = true; // Set to false to retain fixed value for maxiter
+    var radius = 2; // Bailout radius
+    var chkautoiter = true; // Set to false to retain fixed value for maxiter
     var theme; // Color theme
     var shift; // Color theme shift 0-100
     var zoomarea = { x: 0, y: 0, w: 1, h: 1 } // Zooming area
@@ -82,12 +81,14 @@ function start() {
     var angle = 0; // Current Julia rotation angle
     var spininc = 1; // Julia rotate/spin increment in degrees
     var interp = 1; // Linear color interpolation
-    var pickinterp = 1; // Linear color interpolation
-    var pickpalette = 3; // Default palette depth = 16
-    var picklevels = 4; // Default colormap depth = 256
-    var swapaxes = false; // Transpose X/Y axes
-    var colmaps = []; // Array of generated colormaps (gradients)
-    var lastcolmap = THEMES.length; // Counter for user-generated color themes
+    var pickinterp; // Linear color interpolation
+    var pickpalette; // Default palette depth = 16
+    var picklevels; // Default colormap depth = 256
+    var chkswapaxes = false; // Transpose X/Y axes
+    // Array of palettes used to generate color gradients
+    var palettes = [COLORMAP_BB16, COLORMAP_TROP16, COLORMAP_CET16];
+    var gradients = []; // Array of generated color gradients
+    var lasttheme = THEMES.length; // Counter for user-generated color themes
 
     // Initialize the interactive canvas.
     function init() {
@@ -107,19 +108,19 @@ function start() {
         }
 
         // Populate select inputs
-        selectPopulate("modeset", SETMODES);
-        selectPopulate("variantset", SETVARS);
-        selectPopulate("expset", [2, 3, 4, 5, 6, 7, 8]);
-        selectPopulate("themeset", THEMES);
-        selectPopulate("paletteset", PALETTE);
-        selectPopulate("levelset", LEVELS);
-        selectPopulate("interpolateset", INTERPOLATIONS);
-        selectPopulate("interpset", INTERPOLATIONS);
+        selectPopulate("selmode", SETMODES);
+        selectPopulate("selvariant", SETVARS);
+        selectPopulate("inpexp", [2, 3, 4, 5, 6, 7, 8]);
+        selectPopulate("seltheme", THEMES);
+        selectPopulate("selpdepth", PALETTE);
+        selectPopulate("selgdepth", LEVELS);
+        selectPopulate("selinterpolate", INTERPOLATIONS);
+        selectPopulate("selinterp", INTERPOLATIONS);
 
-        // Generate colormaps
-        colmaps.push(makeColormap(palettes[0], 256, 4)); // [0]
-        colmaps.push(makeColormap(palettes[1], 256, 0)); // [1]
-        colmaps.push(makeColormap(palettes[2], 256, 0)); // [2]
+        // Generate initial color gradients
+        gradients.push(makeGradient(palettes[0], 256, 4)); // [0]
+        gradients.push(makeGradient(palettes[1], 256, 0)); // [1]
+        gradients.push(makeGradient(palettes[2], 256, 0)); // [2]
 
         // Reset initial settings
         reset();
@@ -181,12 +182,12 @@ function start() {
         shift = 0;
         setmode = 0;
         setvar = 0;
-        autoiter = true;
+        chkautoiter = true;
         spinning = false;
         zooming = false;
         spininc = 1;
         interp = 1;
-        swapaxes = false;
+        chkswapaxes = false;
         angle = 0;
         pickinterp = 1; // linear
         pickpalette = 3; // 16
@@ -204,11 +205,11 @@ function start() {
         var x, y, c, scalars, color;
         var radius2 = radius ** 2; // Square here to save a step inside the iteration 
         // Calculate number of iterations based on zoom level
-        maxiter = autoiter ? getAutoiter(zoom, setmode) : maxiter;
+        maxiter = chkautoiter ? getchkautoiter(zoom, setmode) : maxiter;
         for (x = 0; x < width; x += 1) {
             for (y = 0; y < height; y += 1) {
                 // Convert pixel coordinate to complex plane coordinate
-                c = ptoc(width, height, x, y, cOffset, zoom, swapaxes);
+                c = ptoc(width, height, x, y, cOffset, zoom, chkswapaxes);
                 // Calculate fractal escape scalars
                 scalars = fractal(c, cJulia, exponent, maxiter, radius2, setmode, setvar);
                 // Pass escape scalars to pixel coloring algorithm
@@ -239,13 +240,13 @@ function start() {
         var ni = normalize(scalars, radius, exponent); // normalised iteration count
         switch (theme) {
             case 0: // Blue brown 16-level cyclic colormap
-                color = getColormap(ni, colmaps[0], shift, interp);
+                color = getColormap(ni, gradients[0], shift, interp);
                 break;
             case 1: // Tropical 256-level cyclic colormap
-                color = getColormap(ni, colmaps[1], shift, interp);
+                color = getColormap(ni, gradients[1], shift, interp);
                 break;
             case 2: // Cet4s 256-level cyclic colormap
-                color = getColormap(ni, colmaps[2], shift, interp);
+                color = getColormap(ni, gradients[2], shift, interp);
                 break;
             case 3: // Rainbow HSV 256-level cyclic colormap
                 color = getColormap(ni, COLORMAP_HSV256, shift, interp);
@@ -279,7 +280,7 @@ function start() {
                 color = hsv2rgb(h, 0.75, 1);
                 break;
             default: // Blue brown 16-level cyclic colormap
-                color = getColormap(ni, colmaps[theme - STATICTHEMES], shift, interp);
+                color = getColormap(ni, gradients[theme - STATICTHEMES], shift, interp);
                 break;
         }
 
@@ -489,7 +490,7 @@ function start() {
                 setPalette();
                 break;
             case "btnPaint": // generate color map
-                doPaint();
+                doGradient();
                 break;
             case "btnSave": {
                 doSave();
@@ -507,51 +508,51 @@ function start() {
 
     // Plot image using manual settings.
     function doValidateSettings() {
-        var inzoffre = parseFloat(document.getElementById("zoffre").value);
-        var inzoffim = parseFloat(document.getElementById("zoffim").value);
-        var injre = parseFloat(document.getElementById("jre").value);
-        var injim = parseFloat(document.getElementById("jim").value);
-        var expset = parseInt(document.getElementById("expset").value);
-        var maxiset = parseInt(document.getElementById("maxiset").value);
-        autoiter = document.getElementById("autoiter").checked;
-        var zoomset = parseFloat(document.getElementById("zoomset").value);
-        var zoomincset = parseFloat(document.getElementById("zoomincset").value);
-        var rotateset = parseFloat(document.getElementById("rotateset").value);
-        var spinincset = parseFloat(document.getElementById("spinincset").value);
-        var shiftset = document.getElementById("shiftset").value;
-        setmode = document.getElementById("modeset").selectedIndex;
-        setvar = document.getElementById("variantset").selectedIndex;
-        theme = document.getElementById("themeset").selectedIndex;
-        interp = document.getElementById("interpolateset").selectedIndex;
-        swapaxes = document.getElementById("swapaxes").checked;
+        var ininpcoffre = parseFloat(document.getElementById("inpcoffre").value);
+        var ininpcoffim = parseFloat(document.getElementById("inpcoffim").value);
+        var ininpcjulre = parseFloat(document.getElementById("inpcjulre").value);
+        var ininpcjulim = parseFloat(document.getElementById("inpcjulim").value);
+        var inpexp = parseInt(document.getElementById("inpexp").value);
+        var inpmaxiter = parseInt(document.getElementById("inpmaxiter").value);
+        chkautoiter = document.getElementById("chkautoiter").checked;
+        var inpzoom = parseFloat(document.getElementById("inpzoom").value);
+        var inpzoominc = parseFloat(document.getElementById("inpzoominc").value);
+        var inpangle = parseFloat(document.getElementById("inpangle").value);
+        var inpspininc = parseFloat(document.getElementById("inpspininc").value);
+        var inpshift = document.getElementById("inpshift").value;
+        setmode = document.getElementById("selmode").selectedIndex;
+        setvar = document.getElementById("selvariant").selectedIndex;
+        theme = document.getElementById("seltheme").selectedIndex;
+        interp = document.getElementById("selinterpolate").selectedIndex;
+        chkswapaxes = document.getElementById("chkswapaxes").checked;
 
-        if (!isNaN(inzoffre) && !isNaN(inzoffim)) {
-            cOffset.set(inzoffre, inzoffim);
+        if (!isNaN(ininpcoffre) && !isNaN(ininpcoffim)) {
+            cOffset.set(ininpcoffre, ininpcoffim);
         }
-        if (!isNaN(injre) && !isNaN(injim)) {
-            cJulia.set(injre, injim);
+        if (!isNaN(ininpcjulre) && !isNaN(ininpcjulim)) {
+            cJulia.set(ininpcjulre, ininpcjulim);
         }
-        if (!isNaN(expset)) {
-            exponent = expset;
+        if (!isNaN(inpexp)) {
+            exponent = inpexp;
         }
-        if (!isNaN(maxiset)) {
-            maxiter = maxiset;
+        if (!isNaN(inpmaxiter)) {
+            maxiter = inpmaxiter;
         }
-        if (!isNaN(zoomset)) {
-            zoom = zoomset;
+        if (!isNaN(inpzoom)) {
+            zoom = inpzoom;
         }
-        if (!isNaN(zoomincset)) {
-            zoominc = zoomincset;
+        if (!isNaN(inpzoominc)) {
+            zoominc = inpzoominc;
         }
-        if (!isNaN(rotateset)) {
-            angle = rotateset & (2 * Math.PI);
+        if (!isNaN(inpangle)) {
+            angle = inpangle & (2 * Math.PI);
             cJulia = cJulia.rotate(angle);
         }
-        if (!isNaN(spinincset)) {
-            spininc = spinincset;
+        if (!isNaN(inpspininc)) {
+            spininc = inpspininc;
         }
-        if (!isNaN(shiftset)) {
-            shift = shiftset;
+        if (!isNaN(inpshift)) {
+            shift = inpshift;
         }
     }
 
@@ -574,46 +575,52 @@ function start() {
         pal.style.backgroundColor = col;
     }
 
-    // Populate palette from selected color theme.
+    // Populate palette from selected color gradient theme.
     function setPalette() {
-        console.log("doing setPaint");
-        var i, idx, col, coln, pal;
-        if (theme < 3) {
+        var i, idx, col, coln, inppal;
+        if (theme < 3) { // Fixed gradient themes
             idx = theme;
         }
         else if (theme > THEMES.length - 1) { // User generated themes
             idx = theme - STATICTHEMES;
         }
         else return;
-        for (i = 0; i < palettes[idx].length; i += 1) {
-            col = palettes[idx][i];
-            coln = RGBtoHex(col[0], col[1], col[2]);
-            pal = document.getElementById("color" + (i + 1));
-            pal.value = coln;
-            pal.style.backgroundColor = coln;
+        for (i = 0; i < 16; i += 1) {
+            inppal = document.getElementById("color" + (i + 1));
+            if (i > palettes[idx].length - 1) { // Unused palette color
+                coln = "#ffffff";
+                inppal.value = "";
+            }
+            else { // Used palette color
+                col = palettes[idx][i];
+                coln = RGBtoHex(col[0], col[1], col[2]);
+                inppal.value = coln;
+                inppal.style.color = findContrast(col[0], col[1], col[2]);
+            }
+            inppal.style.backgroundColor = coln;
         }
     }
 
-    // Generate colormap from user-defined palette and add to themes selection.
-    function doPaint() {
-        var i, sel, opt, palette, levels, interp;
-        palette = PALETTE[document.getElementById("paletteset").selectedIndex];
-        levels = LEVELS[document.getElementById("levelset").selectedIndex];
-        interp = document.getElementById("interpset").selectedIndex;
-        var colmap = [];
-        for (i = 0; i < palette; i += 1) {
+    // Generate color gradient from user-defined palette and add to themes selection.
+    function doGradient() {
+        var i, sel, opt, pdepth, gdepth, interp;
+        pdepth = PALETTE[document.getElementById("selpdepth").selectedIndex];
+        gdepth = LEVELS[document.getElementById("selgdepth").selectedIndex];
+        interp = document.getElementById("selinterp").selectedIndex;
+        var gradient = [];
+        for (i = 0; i < pdepth; i += 1) {
             sel = document.getElementById("color" + (i + 1));
-            colmap.push(HextoRGB(sel.value));
+            gradient.push(HextoRGB(sel.value));
         }
-        palettes.push(colmap);
-        colmaps.push(makeColormap(colmap, levels, interp));
+        palettes.push(gradient);
+        gradients.push(makeGradient(gradient, gdepth, interp));
         opt = document.createElement("option");
-        opt.value = lastcolmap;
-        opt.innerHTML = "User_" + (lastcolmap - STATICTHEMES);
-        sel = document.getElementById("themeset");
+        opt.value = lasttheme;
+        opt.innerHTML = "User_" + (lasttheme - STATICTHEMES) + "_" + gdepth;
+        sel = document.getElementById("seltheme");
         sel.appendChild(opt);
-        theme = lastcolmap;
-        lastcolmap += 1;
+        theme = lasttheme;
+        lasttheme += 1;
     }
 
     // Change cursor to indicate in progress.
@@ -634,26 +641,26 @@ function start() {
         elementSet("size", size.width + "x" + size.height);
         // Update settings panel if it's visible
         if (document.getElementById("settings").offsetParent !== null) {
-            elementSet("zoffre", cOffset.re);
-            elementSet("zoffim", cOffset.im);
-            elementSet("jre", cJulia.re);
-            elementSet("jim", cJulia.im);
-            elementSet("modeset", setmode);
-            elementSet("variantset", setvar);
-            elementSet("expset", exponent);
-            elementSet("maxiset", maxiter);
-            elementSet("autoiter", autoiter);
-            elementSet("zoomset", zoom);
-            elementSet("zoomincset", zoominc);
-            elementSet("rotateset", angle);
-            elementSet("spinincset", spininc);
-            elementSet("themeset", theme);
-            elementSet("shiftset", shift);
-            elementSet("interpolateset", interp);
-            elementSet("swapaxes", swapaxes);
-            elementSet("paletteset", pickpalette);
-            elementSet("levelset", picklevels);
-            elementSet("interpset", pickinterp);
+            elementSet("inpcoffre", cOffset.re);
+            elementSet("inpcoffim", cOffset.im);
+            elementSet("inpcjulre", cJulia.re);
+            elementSet("inpcjulim", cJulia.im);
+            elementSet("selmode", setmode);
+            elementSet("selvariant", setvar);
+            elementSet("inpexp", exponent);
+            elementSet("inpmaxiter", maxiter);
+            elementSet("chkautoiter", chkautoiter);
+            elementSet("inpzoom", zoom);
+            elementSet("inpzoominc", zoominc);
+            elementSet("inpangle", angle);
+            elementSet("inpspininc", spininc);
+            elementSet("seltheme", theme);
+            elementSet("inpshift", shift);
+            elementSet("selinterpolate", interp);
+            elementSet("chkswapaxes", chkswapaxes);
+            elementSet("selpdepth", pickpalette);
+            elementSet("selgdepth", picklevels);
+            elementSet("selinterp", pickinterp);
         }
     }
 
