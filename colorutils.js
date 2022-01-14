@@ -1,25 +1,10 @@
 // ------------------------------------------------------------------------
 // Utility library defining various color rendering and manipulation
-// functions and predefined color gradient palettes for fractal generator.
+// functions and predefined color palettes for fractal generator.
 //
 // Copyright (c) 2021 Algol Variables
 // ------------------------------------------------------------------------
 "use strict";
-
-// Linear interpolation between two RGB colors {r, g, b, a}.
-//
-// @param {object} col1 - first color
-// @param {object} col2 - second color
-// @param {number} ni - normalized iteration count
-// @return {object} - interpolated color
-//
-function interpolate(col1, col2, ni) {
-    var f = ni % 1; // fractional part of ni
-    var r = Math.floor((col2.r - col1.r) * f + col1.r);
-    var g = Math.floor((col2.g - col1.g) * f + col1.g);
-    var b = Math.floor((col2.b - col1.b) * f + col1.b);
-    return { r: r, g: g, b: b, a: 255 };
-}
 
 // Convert HSV values (in range 0-1) to RGB (in range 0-255).
 //
@@ -67,24 +52,39 @@ function hsv2rgb(h, s, v) {
     return col;
 }
 
-// Get interpolated pixel color from RGB colormap.
+// Linear interpolation between two RGB colors {r, g, b, a}.
 //
-// @param {object} ni - normalised bailout iteration count
-// @param {object} colmap - colormap RGB array
+// @param {object} col1 - first color
+// @param {object} col2 - second color
+// @param {number} ni - normalized iteration count
+// @return {object} - interpolated color
+//
+function interpolate(col1, col2, ni) {
+    var f = ni % 1; // fractional part of ni
+    var r = Math.floor((col2.r - col1.r) * f + col1.r);
+    var g = Math.floor((col2.g - col1.g) * f + col1.g);
+    var b = Math.floor((col2.b - col1.b) * f + col1.b);
+    return { r: r, g: g, b: b, a: 255 };
+}
+
+// Get pixel color from RGB gradient.
+//
+// @param {number} ni - normalised bailout iteration count
+// @param {object} gradient - RGB gradient [[r,g,b],[r,g,b],...]
 // @param {number} shift - shift colormap along gradient
-// @param {boolean} interp - interpolate colours true/false
+// @param {number} interp - 0 = none, 1 = linear (other options may be added in future)
 // @param {number} radius - bailout radius
 // @param {number} exponent - integer exponent
-// @return {object} - RGB color object
+// @return {object} - RGB color object {r, g, b, a}
 //
-function getColormap(ni, colmap, shift, interp) {
+function getColor(ni, gradient, shift, interp) {
 
     try {
-        var sh = Math.ceil(shift * (colmap.length) / 100); // gradient shift
-        var col = colmap[(Math.floor(ni) + sh) % colmap.length];
+        var sh = Math.ceil(shift * (gradient.length) / 100); // gradient shift
+        var col = gradient[(Math.floor(ni) + sh) % gradient.length];
         var col1 = { r: col[0], g: col[1], b: col[2], a: 255 };
         if (interp) {
-            col = colmap[(Math.floor(ni) + sh + 1) % colmap.length];
+            col = gradient[(Math.floor(ni) + sh + 1) % gradient.length];
             var col2 = { r: col[0], g: col[1], b: col[2], a: 255 };
             return interpolate(col1, col2, ni);
         }
@@ -93,7 +93,7 @@ function getColormap(ni, colmap, shift, interp) {
         }
     }
     catch (err) {
-        console.log("getColormap error:", ni, sh, ni + sh, scalars.i, scalars.za);
+        console.log("getColor error:", ni, sh, ni + sh, scalars.i, scalars.za);
         return { r: 255, g: 255, b: 255, a: 255 };
     }
 }

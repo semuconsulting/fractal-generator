@@ -38,8 +38,8 @@ const THEMES = [ // Remember to update if you add more themes
 ]
 const STATICTHEMES = THEMES.length - 3; // Number of color themes not mapped in gradients[]
 const PDEPTHS = [4, 8, 12, 16]; // Selectable palette color depths
-const GDEPTHS = [16, 32, 64, 128, 256]; // Selectable gradient color depths
-const INTERPOLATIONS = ["none", "linear"];
+const GDEPTHS = [16, 32, 64, 128, 256, 512]; // Selectable gradient color depths
+const INTERPOLATIONS = ["none", "linear"]; // Further options may be added in future
 const BUTTONS = ["btnReset", "btnZoomIn", "btnZoomOut", "btnZoomAnimate", "btnMode", "btnVariant",
     "btnColor", "btnColorUp", "btnColorDown", "btnJuliaUp", "btnJuliaDown", "btnJuliaSpin",
     "btnExponent", "btnApply", "btnSettings", "btnPaint", "btnSave", "btnHelp"];
@@ -117,7 +117,7 @@ function start() {
         selectPopulate("selinterpolate", INTERPOLATIONS);
         selectPopulate("selinterp", INTERPOLATIONS);
 
-        // Generate initial color gradients
+        // Generate pre-defined color gradients
         gradients.push(makeGradient(palettes[0], 256, 4)); // [0]
         gradients.push(makeGradient(palettes[1], 256, 0)); // [1]
         gradients.push(makeGradient(palettes[2], 256, 0)); // [2]
@@ -213,7 +213,7 @@ function start() {
                 // Calculate fractal escape scalars
                 scalars = fractal(c, cJulia, exponent, maxiter, radius2, setmode, setvar);
                 // Pass escape scalars to pixel coloring algorithm
-                color = getColor(scalars, maxiter, theme, shift);
+                color = getPixelColor(scalars, maxiter, theme, shift);
                 // Plot pixel in imagemap
                 plot(x, y, color, width);
             }
@@ -229,9 +229,9 @@ function start() {
     // @param {number} maxiter - maximum iterations before bailout
     // @param {number} theme - color theme 
     // @param {number} shift - shift colormap along gradient
-    // @return {object} - RGB color object
+    // @return {object} - RGB color object {r, g, b, a}
     //
-    function getColor(scalars, maxiter, theme, shift) {
+    function getPixelColor(scalars, maxiter, theme, shift) {
 
         if (scalars.i == maxiter && theme != 9) {
             return { r: 0, g: 0, b: 0, a: 255 }; // Black
@@ -240,16 +240,16 @@ function start() {
         var ni = normalize(scalars, radius, exponent); // normalised iteration count
         switch (theme) {
             case 0: // Blue brown 16-level cyclic colormap
-                color = getColormap(ni, gradients[0], shift, interp);
+                color = getColor(ni, gradients[0], shift, interp);
                 break;
             case 1: // Tropical 256-level cyclic colormap
-                color = getColormap(ni, gradients[1], shift, interp);
+                color = getColor(ni, gradients[1], shift, interp);
                 break;
             case 2: // Cet4s 256-level cyclic colormap
-                color = getColormap(ni, gradients[2], shift, interp);
+                color = getColor(ni, gradients[2], shift, interp);
                 break;
             case 3: // Rainbow HSV 256-level cyclic colormap
-                color = getColormap(ni, COLORMAP_HSV256, shift, interp);
+                color = getColor(ni, COLORMAP_HSV256, shift, interp);
                 break;
             case 4: // Basic hue
                 h = ((scalars.i / maxiter) + (shift / 100)) % 1;
@@ -280,7 +280,7 @@ function start() {
                 color = hsv2rgb(h, 0.75, 1);
                 break;
             default: // Blue brown 16-level cyclic colormap
-                color = getColormap(ni, gradients[theme - STATICTHEMES], shift, interp);
+                color = getColor(ni, gradients[theme - STATICTHEMES], shift, interp);
                 break;
         }
 
@@ -470,7 +470,7 @@ function start() {
                 palette.style.display = palette.style.display === "block" ? "none" : "block";
                 if (settings.style.display === "block") {
                     btn.style.backgroundColor = "lightblue";
-                    setPalette();
+                    updatePalette();
                 } else {
                     btn.style.backgroundColor = "white";
                 }
@@ -487,7 +487,6 @@ function start() {
             }
             case "btnApply": // apply manual settings
                 doValidateSettings();
-                setPalette();
                 break;
             case "btnPaint": // generate color map
                 doGradient();
@@ -575,32 +574,6 @@ function start() {
         pal.style.backgroundColor = col;
     }
 
-    // Populate palette from selected color gradient theme.
-    function setPalette() {
-        var i, idx, col, coln, inppal;
-        if (theme < 3) { // First 3 are predefined gradient themes
-            idx = theme;
-        }
-        else if (theme > THEMES.length - 1) { // User generated themes
-            idx = theme - STATICTHEMES;
-        }
-        else return;
-        for (i = 0; i < 16; i += 1) {
-            inppal = document.getElementById("color" + (i + 1));
-            if (i > palettes[idx].length - 1) { // Unused palette color
-                coln = "#ffffff";
-                inppal.value = "";
-            }
-            else { // Used palette color
-                col = palettes[idx][i];
-                coln = RGBtoHex(col[0], col[1], col[2]);
-                inppal.value = coln;
-                inppal.style.color = findContrast(col[0], col[1], col[2]);
-            }
-            inppal.style.backgroundColor = coln;
-        }
-    }
-
     // Generate color gradient from user-defined palette and add to themes selection.
     function doGradient() {
         var i, sel, opt, pdepth, gdepth, interp;
@@ -608,17 +581,18 @@ function start() {
         pdepth = PDEPTHS[document.getElementById("selpdepth").selectedIndex];
         gdepth = GDEPTHS[document.getElementById("selgdepth").selectedIndex];
         interp = document.getElementById("selinterp").selectedIndex;
+        // create gradient from palette
         for (i = 0; i < pdepth; i += 1) {
             sel = document.getElementById("color" + (i + 1));
             gradient.push(HextoRGB(sel.value));
         }
-        palettes.push(gradient);
-        gradients.push(makeGradient(gradient, gdepth, interp));
+        palettes.push(gradient); // add to array of palettes
+        gradients.push(makeGradient(gradient, gdepth, interp)); // generate gradient
         opt = document.createElement("option");
         opt.value = lasttheme;
         opt.innerHTML = "User_" + (lasttheme - STATICTHEMES) + "_" + gdepth;
         sel = document.getElementById("seltheme");
-        sel.appendChild(opt);
+        sel.appendChild(opt); // add gradient to bottom of list of themes
         theme = lasttheme;
         lasttheme += 1;
     }
@@ -661,6 +635,33 @@ function start() {
             elementSet("selpdepth", pickpalette);
             elementSet("selgdepth", picklevels);
             elementSet("selinterp", pickinterp);
+        }
+        updatePalette();
+    }
+
+    // Update palette from selected color gradient theme.
+    function updatePalette() {
+        var i, idx, col, coln, inppal;
+        if (theme < 3) { // First 3 are predefined gradient themes
+            idx = theme;
+        }
+        else if (theme > THEMES.length - 1) { // User generated themes
+            idx = theme - STATICTHEMES;
+        }
+        else return;
+        for (i = 0; i < 16; i += 1) {
+            inppal = document.getElementById("color" + (i + 1));
+            if (i > palettes[idx].length - 1) { // Unused palette color
+                coln = "#ffffff";
+                inppal.value = "";
+            }
+            else { // Used palette color
+                col = palettes[idx][i];
+                coln = RGBtoHex(col[0], col[1], col[2]);
+                inppal.value = coln;
+                inppal.style.color = findContrast(col[0], col[1], col[2]);
+            }
+            inppal.style.backgroundColor = coln;
         }
     }
 
