@@ -146,7 +146,8 @@
       <p></p>
       <label class="wid2" for="colorpicker">Color Picker:</label>
       <input type="color" id="colorpicker" value="#555555">
-      <span>Click palettes below to set color from picker.</span><p></p>
+      <span>Click palettes below to set color from picker.</span>
+      <p></p>
       <input type="text" id="color1" class="colpal">
       <input type="text" id="color2" class="colpal">
       <input type="text" id="color3" class="colpal">
@@ -257,6 +258,19 @@
         <td>Open/close help panel.</td>
       </tr>
     </table>
+    <div id="custom_palette">
+      <h3>Creating Custom Color Gradients</h3>
+      <ol>
+        <li>Choose a palette depth of 4, 8, 12 or 16 colors.</li>
+        <li>Choose a gradient depth of 16, 32, 64, 128, 256 or 512 levels.</li>
+        <li>Choose the color interpolation method ('None' or 'Linear').</li>
+        <li>Create the palette by picking colors using the color picker widget and applying the selection to each
+          palette slot in turn.</li>
+        <li>Click 'PAINT'. A color gradient will be created dynamically and applied to the displayed fractal. </li>
+        <li>The custom color gradient will also be added to the list of available color rendering themes in the format
+          'User_x_nnn', where 'x' is an auto-incremented number and 'nnn' is the number of levels.</li>
+      </ol>
+    </div> <!-- /.custom_palette -->
     <div id="navigation">
       <h3>Navigating Mandelbrot and Julia Sets</h3>
       <p>The Mandelbrot set can be considered a map to an infinite number of Julia sets. Pressing

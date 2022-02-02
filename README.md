@@ -36,11 +36,11 @@ The instructions can be viewed by clicking on the ![btnHelp](/resources/btnHelp.
 
 ### To create a custom color rendering palette
 
-- Choose from a palette of 4, 8, 12 or 16 colors.
-- Choose a gradient of 16, 32, 64, 128, 256 or 512 levels.
+- Choose a palette depth of 4, 8, 12 or 16 colors.
+- Choose a gradient depth of 16, 32, 64, 128, 256 or 512 levels.
 - Choose the color interpolation method ('None' or 'Linear').
 - Create the palette by picking colors using the color picker widget and applying the selection to each palette slot in turn.
-- Press 'Paint'. A color gradient will be created dynamically and applied to the displayed fractal. 
+- Click 'PAINT'. A color gradient will be created dynamically and applied to the displayed fractal. 
 - The custom color gradient will also be added to the list of available color rendering themes in the format 'User_x_nnn', where 'x' is an auto-incremented number and 'nnn' is the number of levels.
 
 ## How to Deploy
