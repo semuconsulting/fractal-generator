@@ -2,7 +2,7 @@
 
 Just a bit of fun...
 
-A JavaScript implementation of an interactive fractal generator.  It supports both Mandelbrot and Julia modes and 'Standard', 'Burning Ship' and 'Tricorn' variants using a variety of color rendering themes.
+A JavaScript implementation of an interactive fractal generator.  It supports both Mandelbrot and Julia modes and 'Standard', 'Burning Ship' and 'Tricorn' variants using a variety of color rendering themes, including user-generated colour palettes and gradients.
 
 The application also supports basic 'Deep Zoom' and 'Julia Spin' animation.
 
@@ -34,6 +34,14 @@ The instructions can be viewed by clicking on the ![btnHelp](/resources/btnHelp.
 - Press ![btnSettings](/resources/btnSettings.png) to open or close settings panel.
 - Press ![btnHelp](/resources/btnHelp.png) to open or close help panel.
 
+### To create a custom color rendering palette
+
+- Choose from a palette of 4, 8, 12 or 16 colors.
+- Choose a gradient of 16, 32, 64, 128, 256 or 512 levels.
+- Choose the color interpolation method ('None' or 'Linear').
+- Create the palette by picking colors using the color picker widget and applying the selection to each palette slot in turn.
+- Press 'Paint'. A color gradient will be created dynamically and applied to the displayed fractal. 
+- The custom color gradient will also be added to the list of available color rendering themes in the format 'User_x_nnn', where 'x' is an auto-incremented number and 'nnn' is the number of levels.
 
 ## How to Deploy
 ### To view and deploy as a web page
