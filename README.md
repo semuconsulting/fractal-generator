@@ -58,7 +58,7 @@ cd fractal-generator
 # Copy files to required web server directory e.g. /var/www/html/fractal/
 cp {complexlite.js, colorutils.js, fractalutils.js, app.js, index.html, styles.css, resources/*} /var/www/html/fractal
 ```
-See, for example: [fractal-generator](https://www.algolvariables.com/fractals/)
+See, for example: [fractal-generator](https://www.algolvariables.com/fractals/index.html)
 
 ### To build and deploy as a desktop application
 
