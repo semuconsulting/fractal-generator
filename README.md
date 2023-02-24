@@ -84,7 +84,9 @@ cd out/make
 
 ## License
 
-[BSD 3-Clause License](LICENSE)
+Copyright: Algol Variables © 2021
+
+[GPLv3 License](LICENSE)
 
 Icons from [iconmonstr](https://iconmonstr.com/) - [License](https://iconmonstr.com/license/)
 

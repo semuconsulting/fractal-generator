@@ -16,7 +16,7 @@
     "Julia"
   ],
   "author": "semudev2",
-  "license": "BSD 3-Clause",
+  "license": "GPLv3",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.4",
     "@electron-forge/maker-deb": "^6.0.4",
